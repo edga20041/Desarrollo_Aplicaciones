@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".LogReg.LoginActivity" android:exported="true" />
         <activity android:name=".LogReg.RegisterActivity" android:exported="true" />
+        <activity android:name=".LogReg.VerifyCodeActivity" android:exported ="true" />
+        <activity android:name=".LogReg.RecoverPasswordActivity" android:exported="true"/>
     </application>
 
 </manifest>
