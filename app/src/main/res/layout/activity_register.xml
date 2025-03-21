@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¡Crea tu cuenta!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:paddingBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/nombreInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"/>
+
+    <EditText
+        android:id="@+id/apellidoInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Apellido"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/dniInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="DNI"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/phoneInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Teléfono"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/emailInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Contraseña"
+        android:inputType="textPassword" />
+
+    <ImageView
+        android:id="@+id/showPasswordIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-36dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Mostrar contraseña"
+        android:src="@drawable/ic_eye_off" />
+
+    <EditText
+        android:id="@+id/confirmPasswordInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirmar Contraseña"
+        android:inputType="textPassword"
+        android:layout_marginTop="16dp"/>
+
+    <ImageView
+        android:id="@+id/showConfirmPasswordIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-36dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Mostrar contraseña"
+        android:src="@drawable/ic_eye_off" />
+
+    <Button
+        android:id="@+id/registerUserButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/material_dynamic_primary0"
+        android:padding="12dp"
+        android:layout_marginTop="24dp"/>
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Volver atrás"
+        android:textColor="@color/black"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/darker_gray"/>
+
+</LinearLayout>
