@@ -1,12 +1,15 @@
 package com.example.desarrollo_aplicaciones.auth;
 
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.Task;
 
+import javax.inject.Inject;
+
 public class AuthRepository {
+
     private AuthService authService;
 
+    @Inject
     public AuthRepository(AuthService authService) {
         this.authService = authService;
     }

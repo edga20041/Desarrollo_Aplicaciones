@@ -10,11 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.desarrollo_aplicaciones.MainActivity;
 import com.example.desarrollo_aplicaciones.R;
+import com.example.desarrollo_aplicaciones.auth.AuthRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class VerifyCodeActivity extends AppCompatActivity {
+import com.example.desarrollo_aplicaciones.Dagger.DaggerAppComponent;
 
+import javax.inject.Inject;
+
+public class VerifyCodeActivity extends AppCompatActivity {
+    @Inject
+    AuthRepository authRepository;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private Button btnReenviar, verifyCodeButton;
@@ -27,6 +33,8 @@ public class VerifyCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_code);
+
+        DaggerAppComponent.create().inject(this);
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();

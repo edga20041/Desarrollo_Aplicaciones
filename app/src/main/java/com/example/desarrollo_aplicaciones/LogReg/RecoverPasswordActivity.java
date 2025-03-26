@@ -7,19 +7,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.desarrollo_aplicaciones.Dagger.DaggerAppComponent;
 import com.example.desarrollo_aplicaciones.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import javax.inject.Inject;
+
 public class RecoverPasswordActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
+    @Inject
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recover_password);
 
-        mAuth = FirebaseAuth.getInstance();
+        DaggerAppComponent.create().inject(this);
+
 
         EditText emailInput = findViewById(R.id.emailInput);
         Button recoverPasswordButton = findViewById(R.id.recoverPasswordButton);

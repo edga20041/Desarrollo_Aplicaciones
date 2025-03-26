@@ -10,22 +10,26 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.desarrollo_aplicaciones.MyApplication;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.auth.AuthRepository;
 import com.example.desarrollo_aplicaciones.auth.AuthService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import javax.inject.Inject;
+
 public class RegisterActivity extends AppCompatActivity {
 
-    private AuthRepository authRepository;
+    @Inject
+    AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        authRepository = new AuthRepository(new AuthService());
+        ((MyApplication) getApplication()).getAppComponent().inject(this);
 
         EditText nombreInput = findViewById(R.id.nombreInput);
         EditText apellidoInput = findViewById(R.id.apellidoInput);

@@ -11,9 +11,10 @@ public class AuthService {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    public AuthService() {
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+    // Constructor que recibe FirebaseAuth
+    public AuthService(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
+        this.auth = firebaseAuth;
+        this.db = firebaseFirestore;
     }
 
     public Task<AuthResult> register(String email, String password, String nombre, String apellido, String dni, String phone) {
@@ -32,12 +33,10 @@ public class AuthService {
         return auth.signInWithEmailAndPassword(email, password);
     }
 
-
     public void saveUserData(String userId, String nombre, String apellido, String dni, String email, String phone) {
         User user = new User(nombre, apellido, dni, email, phone);
         db.collection("users").document(userId).set(user);
     }
-
 
     public void sendEmailVerification() {
         if (auth.getCurrentUser() != null) {
