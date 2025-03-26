@@ -9,11 +9,9 @@ import dagger.Component;
 import javax.inject.Singleton;
 
 @Singleton
-@Component(modules = AppModule.class)
+@Component(modules = {NetworkModule.class, AppModule.class})
 public interface AppComponent {
     void inject(LoginActivity loginActivity);
     void inject(RegisterActivity registerActivity);
-    void inject(RecoverPasswordActivity recoverPasswordActivity);
-    void inject(VerifyCodeActivity verifyCodeActivity);
     void inject(MainActivity mainActivity);
 }

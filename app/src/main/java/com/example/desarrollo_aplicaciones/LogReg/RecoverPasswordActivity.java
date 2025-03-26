@@ -17,15 +17,15 @@ import javax.inject.Inject;
 public class RecoverPasswordActivity extends AppCompatActivity {
 
     @Inject
-    FirebaseAuth mAuth;
+    AuthRepository authRepository;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recover_password);
 
-        DaggerAppComponent.create().inject(this);
-
+        ((MyApplication) getApplication()).getAppComponent().inject(this);
 
         EditText emailInput = findViewById(R.id.emailInput);
         Button recoverPasswordButton = findViewById(R.id.recoverPasswordButton);
@@ -39,16 +39,25 @@ public class RecoverPasswordActivity extends AppCompatActivity {
                 return;
             }
 
-            mAuth.sendPasswordResetEmail(email)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(RecoverPasswordActivity.this, "Correo de recuperación enviado.", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
-                            Toast.makeText(RecoverPasswordActivity.this, "Error al enviar correo de recuperación.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            authRepository.resetPassword(email).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(RecoverPasswordActivity.this, "Correo de recuperación enviado.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(RecoverPasswordActivity.this, "Error al enviar el correo.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(RecoverPasswordActivity.this, "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
+
+
 
         loginRedirect.setOnClickListener(v -> {
             startActivity(new Intent(RecoverPasswordActivity.this, LoginActivity.class));

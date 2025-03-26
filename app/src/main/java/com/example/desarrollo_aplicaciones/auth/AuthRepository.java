@@ -7,30 +7,27 @@ import javax.inject.Inject;
 
 public class AuthRepository {
 
-    private AuthService authService;
+    private final ApiService apiService;
 
     @Inject
-    public AuthRepository(AuthService authService) {
-        this.authService = authService;
+    public AuthRepository(ApiService apiService) {
+        this.apiService = apiService;
     }
 
-    public Task<AuthResult> registerUser(String email, String password, String nombre, String apellido, String dni, String phone) {
-        return authService.register(email, password, nombre, apellido, dni, phone);
+    public Call<Void> registerUser(User user) {
+        return apiService.register(user);
     }
 
-    public void saveUserData(String userId, String nombre, String apellido, String dni, String email, String phone) {
-        authService.saveUserData(userId, nombre, apellido, dni, email, phone);
+    public Call<AuthResponse> loginUser(LoginRequest loginRequest) {
+        return apiService.login(loginRequest);
     }
 
-    public void sendVerificationEmail() {
-        authService.sendEmailVerification();
+    public Call<Void> resetPassword(String email) {
+        return apiService.resetPassword(new EmailRequest(email));
     }
 
-    public void recoverPassword(String email) {
-        authService.resetPassword(email);
-    }
-
-    public Task<AuthResult> loginUser(String email, String password) {
-        return authService.login(email, password);
+    public Call<User> getUserById(int userId) {
+        return apiService.getUserById(userId);
     }
 }
+

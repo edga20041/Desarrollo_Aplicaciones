@@ -12,9 +12,6 @@ import com.example.desarrollo_aplicaciones.MainActivity;
 import com.example.desarrollo_aplicaciones.MyApplication;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.auth.AuthRepository;
-import com.example.desarrollo_aplicaciones.auth.AuthService;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import javax.inject.Inject;
 
@@ -56,23 +53,19 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            authRepository.loginUser(email, password).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        if (user.isEmailVerified()) {
-                            Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            finish();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Debes verificar tu correo antes de iniciar sesión.", Toast.LENGTH_LONG).show();
-                            FirebaseAuth.getInstance().signOut();
-                        }
+            LoginRequest loginRequest = new LoginRequest(email, password);
+            authRepository.loginUser(loginRequest).enqueue(new Callback<AuthResponse>() {
+                @Override
+                public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(LoginActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
                 }
+
             });
-        });
     }
 }

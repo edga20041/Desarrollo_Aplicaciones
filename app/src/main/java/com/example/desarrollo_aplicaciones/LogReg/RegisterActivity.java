@@ -2,7 +2,6 @@ package com.example.desarrollo_aplicaciones.LogReg;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.desarrollo_aplicaciones.MyApplication;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.auth.AuthRepository;
-import com.example.desarrollo_aplicaciones.auth.AuthService;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import javax.inject.Inject;
 
@@ -94,37 +90,25 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             // Registro del usuario y guardado de los datos en Firestore
-            authRepository.registerUser(email, password, nombre, apellido, dni, phone).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (user != null) {
-                        user.sendEmailVerification().addOnCompleteListener(emailTask -> {
-                            if (emailTask.isSuccessful()) {
-                                Toast.makeText(RegisterActivity.this,
-                                        "Código enviado a tu correo. Verifica para continuar.",
-                                        Toast.LENGTH_LONG).show();
-
-                                // Guardamos temporalmente los datos del usuario hasta la verificación
-                                Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
-                                intent.putExtra("userId", user.getUid());
-                                intent.putExtra("nombre", nombre);
-                                intent.putExtra("apellido", apellido);
-                                intent.putExtra("dni", dni);
-                                intent.putExtra("email", email);
-                                intent.putExtra("phone", phone);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(RegisterActivity.this,
-                                        "Error al enviar código de verificación",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            User user = new User(nombre, apellido, dni, email, phone);
+            authRepository.registerUser(user).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(RegisterActivity.this, "Registro exitoso. Verifica tu correo.", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(RegisterActivity.this, VerifyCodeActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(RegisterActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    Toast.makeText(RegisterActivity.this, "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
     }
+
 }

@@ -1,7 +1,6 @@
 package com.example.desarrollo_aplicaciones.Dagger;
 
 import com.example.desarrollo_aplicaciones.auth.AuthRepository;
-import com.example.desarrollo_aplicaciones.auth.AuthService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
