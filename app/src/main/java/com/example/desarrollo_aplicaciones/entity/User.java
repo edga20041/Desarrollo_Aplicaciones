@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.DI;
+package com.example.desarrollo_aplicaciones.entity;
 
 public class User {
     private String nombre;

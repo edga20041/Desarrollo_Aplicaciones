@@ -1,5 +1,5 @@
-package com.example.desarrollo_aplicaciones.auth;
-import com.example.desarrollo_aplicaciones.DI.User;
+package com.example.desarrollo_aplicaciones.api.model;
+import com.example.desarrollo_aplicaciones.entity.User;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,8 +15,8 @@ public interface ApiService {
     @POST("login")
     Call<AuthResponse> login(@Body LoginRequest loginRequest);
 
-    @POST("reset-password")
-    Call<Void> resetPassword(@Body EmailRequest email);
+    //@PUT("reset-password")
+   // Call<Void> resetPassword(@Body EmailRequest email);
 
     @GET("user/{id}")
     Call<User> getUserById(@Path("id") int userId);

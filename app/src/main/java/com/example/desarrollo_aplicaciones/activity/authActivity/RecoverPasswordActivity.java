@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.LogReg;
+/*package com.example.desarrollo_aplicaciones.LogReg;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -65,3 +65,4 @@ public class RecoverPasswordActivity extends AppCompatActivity {
         });
     }
 }
+*/

@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.auth;
+package com.example.desarrollo_aplicaciones.repository.auth;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;

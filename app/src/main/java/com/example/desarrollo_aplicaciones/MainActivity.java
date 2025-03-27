@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.desarrollo_aplicaciones.DI.User;
-import com.example.desarrollo_aplicaciones.LogReg.LoginActivity;
-import com.example.desarrollo_aplicaciones.LogReg.RegisterActivity;
-import com.example.desarrollo_aplicaciones.auth.ApiService;
+import com.example.desarrollo_aplicaciones.entity.User;
+import com.example.desarrollo_aplicaciones.activity.authActivity.LoginActivity;
+import com.example.desarrollo_aplicaciones.activity.authActivity.RegisterActivity;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

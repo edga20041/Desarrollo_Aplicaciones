@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.LogReg;
+package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,38 +7,36 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.desarrollo_aplicaciones.MainActivity;
-import com.example.desarrollo_aplicaciones.MyApplication;
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.auth.AuthRepository;
-
+import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
+import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
+import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
+import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
+import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
 
+@AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
 
     @Inject
-    AuthRepository authRepository;
+    AuthRetrofitRepository authRetrofitRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        ((MyApplication) getApplication()).getAppComponent().inject(this);
-
-
 
         EditText emailInput = findViewById(R.id.emailInput);
         EditText passwordInput = findViewById(R.id.passwordInput);
         Button loginButton = findViewById(R.id.loginUserButton);
-        Button backButton = findViewById(R.id.backButton);  // Reference to back button
-
+        Button backButton = findViewById(R.id.backButton);
         TextView recoverPasswordLink = findViewById(R.id.recoverPasswordLink);
 
-        recoverPasswordLink.setOnClickListener(v -> {
+       /* recoverPasswordLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RecoverPasswordActivity.class));
-        });
+        });*/
 
         backButton.setOnClickListener(v -> {
             onBackPressed();
@@ -54,18 +52,20 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             LoginRequest loginRequest = new LoginRequest(email, password);
-            authRepository.loginUser(loginRequest).enqueue(new Callback<AuthResponse>() {
+
+            authRetrofitRepository.login(loginRequest, new AuthServiceCallback<AuthResponse>() {
                 @Override
-                public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
-                    }
+                public void onSuccess(AuthResponse result) {
+                    Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 }
 
+                @Override
+                public void onError(Throwable error) {
+                    Toast.makeText(LoginActivity.this, "Error al iniciar sesión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             });
+        });
     }
 }

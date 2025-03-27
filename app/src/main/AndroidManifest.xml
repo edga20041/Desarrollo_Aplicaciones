@@ -20,10 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LogReg.LoginActivity" android:exported="true" />
-        <activity android:name=".LogReg.RegisterActivity" android:exported="true" />
-        <activity android:name=".LogReg.VerifyCodeActivity" android:exported ="true" />
-        <activity android:name=".LogReg.RecoverPasswordActivity" android:exported="true"/>
+        <activity android:name=".activity.authActivity.LoginActivity" android:exported="true" />
+        <activity android:name=".activity.authActivity.RegisterActivity" android:exported="true" />
+        <activity android:name=".activity.authActivity.VerifyCodeActivity" android:exported ="true" />
+        <activity android:name=".activity.RecoverPasswordActivity" android:exported="true"/>
     </application>
 
 </manifest>

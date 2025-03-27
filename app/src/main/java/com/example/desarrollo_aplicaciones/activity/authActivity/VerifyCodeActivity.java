@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.LogReg;
+/*package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,17 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.desarrollo_aplicaciones.MainActivity;
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.auth.AuthRepository;
+import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.example.desarrollo_aplicaciones.Dagger.DaggerAppComponent;
+import com.example.desarrollo_aplicaciones.di.DaggerAppComponent;
 
 import javax.inject.Inject;
 
 public class VerifyCodeActivity extends AppCompatActivity {
     @Inject
-    AuthRepository authRepository;
+    AuthRetrofitRepository authRetrofitRepository;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private Button btnReenviar, verifyCodeButton;
@@ -93,3 +93,4 @@ public class VerifyCodeActivity extends AppCompatActivity {
         });
     }
 }
+*/
