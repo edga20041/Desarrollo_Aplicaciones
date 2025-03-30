@@ -2,94 +2,130 @@ package com.example.desarrollo_aplicaciones.LogReg;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.desarrollo_aplicaciones.MainActivity;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.auth.AuthRepository;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.example.desarrollo_aplicaciones.Dagger.DaggerAppComponent;
+import java.util.Random;
 
 import javax.inject.Inject;
 
 public class VerifyCodeActivity extends AppCompatActivity {
+
     @Inject
     AuthRepository authRepository;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
-    private Button btnReenviar, verifyCodeButton;
-    private TextView mensajeConfirmacion;
-    private Handler handler = new Handler();
-    private static final int TIEMPO_ESPERA = 30000; // 30 segundos de espera
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String email, codigoVerificacionGenerado;
+    private EditText codigoIngresadoEditText;
+    private Button verificarCodigoButton;
+    private Button btnReenviar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_code);
 
-        DaggerAppComponent.create().inject(this);
+        email = getIntent().getStringExtra("email");
+        codigoVerificacionGenerado = getIntent().getStringExtra("codigoVerificacion");
 
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-
-        mensajeConfirmacion = findViewById(R.id.mensajeConfirmacion);
+        codigoIngresadoEditText = findViewById(R.id.codigoIngresadoEditText);
+        verificarCodigoButton = findViewById(R.id.verifyCodeButton);
         btnReenviar = findViewById(R.id.btnReenviar);
-        verifyCodeButton = findViewById(R.id.verifyCodeButton);
 
-        mensajeConfirmacion.setText("📩 Revisa tu correo electrónico y confirma tu cuenta para continuar.");
-
+        verificarCodigoButton.setOnClickListener(v -> verificarCodigo());
         btnReenviar.setOnClickListener(v -> reenviarCodigo());
+    }
 
-        verifyCodeButton.setOnClickListener(v -> verificarManual());
+    private void verificarCodigo() {
+        String codigoIngresado = codigoIngresadoEditText.getText().toString();
 
-
-        verificarEstadoCuenta();
+        db.collection("codigos_verificacion").document(email).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String codigoAlmacenado = document.getString("codigo");
+                            if (document.contains("fecha_expiracion")) {
+                                Long fechaExpiracionLong = document.getLong("fecha_expiracion");
+                                if (codigoAlmacenado != null && codigoAlmacenado.equals(codigoIngresado) && fechaExpiracionLong != null && System.currentTimeMillis() < fechaExpiracionLong) {
+                                    // Código válido
+                                    Toast.makeText(this, "Cuenta verificada. ¡Bienvenido!", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(this, MainActivity.class));
+                                    finish();
+                                } else {
+                                    // Código inválido o expirado
+                                    Toast.makeText(this, "Código inválido o expirado.", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                // fecha_expiracion no existe
+                                Toast.makeText(this, "Código expirado.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            // Código no encontrado
+                            Toast.makeText(this, "Código no encontrado.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        // Manejar error
+                        Toast.makeText(this, "Error al verificar el código.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void reenviarCodigo() {
-        btnReenviar.setEnabled(false);
-        if (user != null) {
-            user.sendEmailVerification().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(VerifyCodeActivity.this, "Código reenviado. Revisa tu correo.", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(VerifyCodeActivity.this, "Error al reenviar el código.", Toast.LENGTH_SHORT).show();
-                }
+        String nuevoCodigo = generarCodigoVerificacion();
+        almacenarCodigoVerificacion(email, nuevoCodigo);
+        enviarCorreo(email, nuevoCodigo);
+    }
 
-                handler.postDelayed(() -> btnReenviar.setEnabled(true), TIEMPO_ESPERA);
-
-            });
+    private String generarCodigoVerificacion() {
+        String caracteres = "0123456789";
+        Random random = new Random();
+        StringBuilder codigo = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            codigo.append(caracteres.charAt(random.nextInt(caracteres.length())));
         }
+        return codigo.toString();
     }
 
-    private void verificarEstadoCuenta() {
-        handler.postDelayed(() -> user.reload().addOnCompleteListener(task -> {
-            if (user.isEmailVerified()) {
-                Toast.makeText(VerifyCodeActivity.this, "Cuenta verificada. ¡Bienvenido!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(VerifyCodeActivity.this, MainActivity.class));
-                finish();
-            } else {
-                verificarEstadoCuenta();
-            }
-        }), 5000); // Verifica cada 5 segundos
+    private void almacenarCodigoVerificacion(String email, String codigo) {
+        long fechaExpiracion = System.currentTimeMillis() + 300000; // 5 minutos de expiración
+        db.collection("codigos_verificacion").document(email)
+                .set(java.util.Map.of(
+                        "codigo", codigo,
+                        "fecha_expiracion", fechaExpiracion
+                ))
+                .addOnSuccessListener(aVoid -> {
+                    // Código almacenado con éxito
+                })
+                .addOnFailureListener(e -> {
+                    // Manejar error
+                });
     }
 
-    private void verificarManual() {
-        user.reload().addOnCompleteListener(task -> {
-            if (user.isEmailVerified()) {
-                Toast.makeText(this, "Cuenta verificada. ¡Bienvenido!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            } else {
-                Toast.makeText(this, "Aún no has verificado tu cuenta. Revisa tu correo.", Toast.LENGTH_LONG).show();
-            }
-        });
+    private void enviarCorreo(String email, String codigo) {
+        new Thread(() -> {
+            String asunto = "Tu nuevo código de verificación";
+            String mensaje = "Tu nuevo código de verificación es: " + codigo;
+
+            String usuarioCorreo = "edgardo20041@gmail.com";
+            String contrasenaCorreo = "rcih ashw ikid soip";
+            boolean enviado = EmailService.enviarCorreo(email, asunto, mensaje, usuarioCorreo, contrasenaCorreo);
+
+            runOnUiThread(() -> {
+                if (enviado) {
+                    Toast.makeText(this, "Nuevo código enviado a tu correo.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error al enviar el correo.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
     }
 }

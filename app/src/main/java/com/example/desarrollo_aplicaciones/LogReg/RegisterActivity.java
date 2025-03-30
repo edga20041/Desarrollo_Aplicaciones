@@ -16,6 +16,9 @@ import com.example.desarrollo_aplicaciones.auth.AuthRepository;
 import com.example.desarrollo_aplicaciones.auth.AuthService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -23,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Inject
     AuthRepository authRepository;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +108,10 @@ public class RegisterActivity extends AppCompatActivity {
                                         "Código enviado a tu correo. Verifica para continuar.",
                                         Toast.LENGTH_LONG).show();
 
+                                String codigo = generarCodigoVerificacion();
+                                almacenarCodigoVerificacion(email,codigo);
+                                enviarCorreo(email,codigo);
+
                                 // Guardamos temporalmente los datos del usuario hasta la verificación
                                 Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
                                 intent.putExtra("userId", user.getUid());
@@ -111,6 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 intent.putExtra("apellido", apellido);
                                 intent.putExtra("dni", dni);
                                 intent.putExtra("email", email);
+                                intent.putExtra("codigoVerificacion", codigo);
                                 intent.putExtra("phone", phone);
                                 startActivity(intent);
                                 finish();
@@ -126,5 +135,49 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+    private String generarCodigoVerificacion() {
+        String caracteres = "0123456789";
+        Random random = new Random();
+        StringBuilder codigo = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            codigo.append(caracteres.charAt(random.nextInt(caracteres.length())));
+        }
+        return codigo.toString();
+    }
+
+    private void almacenarCodigoVerificacion(String email, String codigo) {
+        long fechaExpiracion = System.currentTimeMillis() + 300000; // 5 minutos de expiración
+        db.collection("codigos_verificacion").document(email)
+                .set(java.util.Map.of(
+                        "codigo", codigo,
+                        "fecha_expiracion", fechaExpiracion // Agregamos la fecha de expiración
+                ))
+                .addOnSuccessListener(aVoid -> {
+                    // Código almacenado con éxito
+                })
+                .addOnFailureListener(e -> {
+                    // Manejar error
+                });
+    }
+
+    private void enviarCorreo(String email, String codigo) {
+        new Thread(() -> {
+            String asunto = "Tu código de verificación";
+            String mensaje = "Tu código de verificación es: " + codigo;
+
+            String usuarioCorreo = "edgardo20041@gmail.com";
+            String contrasenaCorreo = "rcih ashw ikid soip";
+
+            boolean enviado = EmailService.enviarCorreo(email, asunto, mensaje, usuarioCorreo, contrasenaCorreo);
+
+            runOnUiThread(() -> {
+                if (enviado) {
+                    Toast.makeText(this, "Código enviado a tu correo.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error al enviar el correo.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
     }
 }
