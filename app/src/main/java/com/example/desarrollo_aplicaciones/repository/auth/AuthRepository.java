@@ -1,13 +1,14 @@
 package com.example.desarrollo_aplicaciones.repository.auth;
 
 
+import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
 import com.example.desarrollo_aplicaciones.entity.User;
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
 //import com.example.desarrollo_aplicaciones.data.api.model.EmailRequest;
 
 public interface AuthRepository {
-    void register(User user, String password, AuthServiceCallback<Void> callback);
+    void register(RegisterRequest registerRequest, AuthServiceCallback<Void> callback);
 
     void login(LoginRequest loginRequest, AuthServiceCallback<AuthResponse> callback);
 

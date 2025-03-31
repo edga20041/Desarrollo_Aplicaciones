@@ -1,23 +1,25 @@
-package com.example.desarrollo_aplicaciones.DI;
+package com.example.desarrollo_aplicaciones.api.model;
 
-public class User {
+public class RegisterRequest {
     private String nombre;
     private String apellido;
     private String dni;
-    private String email;
     private String phone;
+    private String email;
+    private String password;
 
-    public User() {
+    public RegisterRequest() {
     }
 
-    public User(String nombre, String apellido, String dni, String email, String phone) {
+
+    public RegisterRequest(String nombre, String apellido, String dni, String phone, String email, String password) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
-        this.email = email;
         this.phone = phone;
+        this.email = email;
+        this.password = password;
     }
-
 
     public String getNombre() {
         return nombre;
@@ -43,6 +45,14 @@ public class User {
         this.dni = dni;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -51,13 +61,11 @@ public class User {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
-
-

@@ -1,5 +1,6 @@
 package com.example.desarrollo_aplicaciones.repository.auth;
 
+import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
 import com.example.desarrollo_aplicaciones.entity.User;
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
@@ -20,11 +21,11 @@ public class AuthRetrofitRepository implements AuthRepository {
     }
 
     @Override
-    public void register(User user, String password, AuthServiceCallback<Void> callback) { // Recibe la contraseña
-        firebaseAuth.createUserWithEmailAndPassword(user.getEmail(), password) // Usa la contraseña
+    public void register(RegisterRequest registerRequest, AuthServiceCallback<Void> callback) {
+        firebaseAuth.createUserWithEmailAndPassword(registerRequest.getEmail(), registerRequest.getPassword())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        callback.onSuccess(null); // Registro exitoso
+                        callback.onSuccess(null);
                     } else {
                         callback.onError(task.getException());
                     }

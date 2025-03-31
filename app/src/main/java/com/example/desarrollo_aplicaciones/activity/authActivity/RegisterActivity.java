@@ -8,11 +8,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.desarrollo_aplicaciones.R;
+import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
 import com.example.desarrollo_aplicaciones.entity.User;
+import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
+import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,7 +33,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class RegisterActivity extends AppCompatActivity {
 
     @Inject
-    FirebaseAuth mAuth; // Inyecta FirebaseAuth
+    FirebaseAuth mAuth;
+    @Inject
+    AuthRetrofitRepository authRetrofitRepository;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -65,7 +70,8 @@ public class RegisterActivity extends AppCompatActivity {
             String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
             if (validateFields(nombre, apellido, dni, phone, email, password, confirmPassword)) {
-                registerWithFirebase(nombre, apellido, dni, phone, email, password); // Usa Firebase para registro
+                RegisterRequest registerRequest = new RegisterRequest(nombre, apellido, dni, phone, email, password);
+                registerWithFirebase(registerRequest);
             }
         });
     }
@@ -81,8 +87,9 @@ public class RegisterActivity extends AppCompatActivity {
                 toggleIcon.setImageResource(R.drawable.ic_eye_off);
             }
             passwordField.setSelection(passwordField.getText().length());
-        });
-    }
+        })
+    ;}
+
 
     private boolean validateFields(String nombre, String apellido, String dni, String phone, String email, String password, String confirmPassword) {
         if (nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty() || phone.isEmpty() ||
@@ -99,54 +106,53 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private void registerWithFirebase(String nombre, String apellido, String dni, String phone, String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Registro exitoso en Firebase
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            if (firebaseUser != null) {
-                                // Enviar verificación de correo
-                                firebaseUser.sendEmailVerification().addOnCompleteListener(emailTask -> {
-                                    if (emailTask.isSuccessful()) {
-                                        Toast.makeText(RegisterActivity.this, "Código enviado a tu correo. Verifica para continuar.", Toast.LENGTH_LONG).show();
+    private void registerWithFirebase(RegisterRequest registerRequest) {
+        authRetrofitRepository.register(registerRequest, new AuthServiceCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
 
-                                        String codigo = generarCodigoVerificacion();
-                                        almacenarCodigoVerificacion(email, codigo); // Usar el email del usuario
-                                        enviarCorreo(email, codigo); // Usar el email del usuario
 
-                                        User user = new User(nombre, apellido, dni, email, phone);
-                                        guardarDatosUsuario(user); // Guardar datos adicionales del usuario
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    firebaseUser.sendEmailVerification().addOnCompleteListener(emailTask -> {
+                        if (emailTask.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Código enviado a tu correo. Verifica para continuar.", Toast.LENGTH_LONG).show();
 
-                                        Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
-                                        intent.putExtra("email", email);
-                                        intent.putExtra("codigoVerificacion", codigo);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, "Error al enviar código de verificación", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
+                            String codigo = generarCodigoVerificacion();
+                            almacenarCodigoVerificacion(registerRequest.getEmail(), codigo);
+                            enviarCorreo(registerRequest.getEmail(), codigo);
+
+                            User user = new User(registerRequest.getNombre(), registerRequest.getApellido(), registerRequest.getDni(), registerRequest.getEmail(), registerRequest.getPhone());
+                            guardarDatosUsuario(user);
+
+                            Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
+                            intent.putExtra("email", registerRequest.getEmail());
+                            intent.putExtra("codigoVerificacion", codigo);
+                            startActivity(intent);
+                            finish();
                         } else {
-                            // Error en el registro de Firebase
-                            Toast.makeText(RegisterActivity.this, "Error al registrar: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Error al enviar código de verificación", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+                    });
+                }
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Toast.makeText(RegisterActivity.this, "Error al registrar: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void guardarDatosUsuario(User user) {
-        db.collection("users").document(user.getEmail()) // Usar el email como ID
+        db.collection("users").document(user.getEmail())
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("RegisterActivity", "Datos de usuario guardados");
                 })
                 .addOnFailureListener(e -> {
                     Log.e("RegisterActivity", "Error al guardar datos de usuario", e);
-                    // Manejar el error si es necesario
+
                 });
     }
 
@@ -168,10 +174,8 @@ public class RegisterActivity extends AppCompatActivity {
                         "fecha_expiracion", fechaExpiracion
                 ))
                 .addOnSuccessListener(aVoid -> {
-                    // Código almacenado con éxito
                 })
                 .addOnFailureListener(e -> {
-                    // Manejar error
                 });
     }
 
