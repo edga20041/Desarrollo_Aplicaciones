@@ -19,11 +19,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Configuración adicional si es necesaria -->
         </activity>
         <activity android:name=".activity.authActivity.LoginActivity" android:exported="true" />
         <activity android:name=".activity.authActivity.RegisterActivity" android:exported="true" />
         <activity android:name=".activity.authActivity.VerifyCodeActivity" android:exported ="true" />
         <activity android:name=".activity.authActivity.RecoverPasswordActivity" android:exported="true"/>
+        <activity android:name=".HomeActivity" android:exported="false" />
     </application>
 
 </manifest>
