@@ -9,6 +9,9 @@ public class AuthResponse {
 
     @SerializedName("uid")
     private String uid;
+    
+    @SerializedName("token")
+    private String token;
 
     // Constructor vacío
     public AuthResponse() {
@@ -29,5 +32,13 @@ public class AuthResponse {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+    
+    public String getToken() {
+        return token;
+    }
+    
+    public void setToken(String token) {
+        this.token = token;
     }
 }
