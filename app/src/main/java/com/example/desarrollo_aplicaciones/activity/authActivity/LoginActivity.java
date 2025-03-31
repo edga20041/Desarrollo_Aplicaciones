@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.desarrollo_aplicaciones.MainActivity;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
 import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
@@ -17,8 +16,6 @@ import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
-import android.content.SharedPreferences;
-import android.app.ProgressDialog;
 import com.example.desarrollo_aplicaciones.HomeActivity;
 
 @AndroidEntryPoint
@@ -46,15 +43,15 @@ public class LoginActivity extends AppCompatActivity {
         EditText emailInput = findViewById(R.id.emailInput);
         EditText passwordInput = findViewById(R.id.passwordInput);
         Button loginButton = findViewById(R.id.loginUserButton);
-        Button backButton = findViewById(R.id.backButton);
         TextView recoverPasswordLink = findViewById(R.id.recoverPasswordLink);
+        TextView registerLink = findViewById(R.id.registerLink);
 
         recoverPasswordLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RecoverPasswordActivity.class));
         });
 
-        backButton.setOnClickListener(v -> {
-            onBackPressed();
+        registerLink.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         loginButton.setOnClickListener(v -> {
@@ -89,17 +86,17 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("auth_token", result.getToken());
                         editor.apply();
                     }
-                    
+
                     Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                    
+
                     Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                     homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(homeIntent);
-                    
+
                     // No es necesario llamar a finish() cuando usas esas flags
                     progressDialog.dismiss();
                 }
-                
+
                 @Override
                 public void onError(Throwable error) {
                     // Mantener el código original de error
