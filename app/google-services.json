@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "656862383169",
+    "project_id": "desarrolloaplicacion-2daad",
+    "storage_bucket": "desarrolloaplicacion-2daad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656862383169:android:ade0139bc71d701ed08ac0",
+        "android_client_info": {
+          "package_name": "com.example.desarrollo_aplicaciones"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSmw4qAnmy5z5hufgmSvLVJocjoz2LaXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
