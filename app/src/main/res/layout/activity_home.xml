@@ -1,28 +1,79 @@
 <!-- filepath: c:\Users\USUARIO\Desarrollo_Aplicaciones\app\src\main\res\layout\activity_home.xml -->
-<androidx.constraintlayout.widget.ConstraintLayout 
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <!-- Texto de bienvenida -->
     <TextView
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¡Bienvenido a la aplicación!"
+        android:text="Bienvenido, UserName 👋"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:fontFamily="@font/urbanist"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-        
-    <Button
-        android:id="@+id/logoutButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/profileImage"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Mensaje adicional -->
+    <TextView
+        android:id="@+id/readyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"
-        app:layout_constraintTop_toBottomOf="@id/welcomeText"
+        android:text="Todo listo para repartir"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:fontFamily="@font/urbanist"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcomeText"
+        app:layout_constraintEnd_toStartOf="@id/profileImage"
+        android:layout_marginTop="4dp" />
+
+    <!-- Imagen de perfil -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_profile_placeholder"
+        android:contentDescription="Profile Image"
+        android:scaleType="centerCrop"
+        android:background="@drawable/circle_background"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Botón de acción sobre la imagen -->
+    <ImageView
+        android:id="@+id/addActionButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_add"
+        android:contentDescription="Add Action"
+        android:background="@drawable/circle_background_red"
+        app:layout_constraintEnd_toEndOf="@id/profileImage"
+        app:layout_constraintBottom_toBottomOf="@id/profileImage"
+        android:layout_marginEnd="-4dp"
+        android:layout_marginBottom="-4dp" />
+
+<Button
+    android:id="@+id/logoutButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Cerrar sesión"
+    android:backgroundTint="@color/red"
+    android:textColor="@color/white"
+    android:fontFamily="@font/urbanist"
+    android:textStyle="bold"
+    app:layout_constraintTop_toBottomOf="@id/readyText"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginTop="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
