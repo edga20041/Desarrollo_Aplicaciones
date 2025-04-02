@@ -251,4 +251,3 @@ public class RegisterActivity extends AppCompatActivity {
         Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
     }
 }
-}
