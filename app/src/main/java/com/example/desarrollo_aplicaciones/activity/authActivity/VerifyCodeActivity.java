@@ -2,6 +2,7 @@ package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class VerifyCodeActivity extends AppCompatActivity {
-
+    private static final String TAG = "VerifyCodeActivity";
     @Inject
     AuthRetrofitRepository authRetrofitRepository;
 
@@ -36,7 +37,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_code);
-
+        Log.d(TAG, "onCreate: La Activity ha sido creada.");
         email = getIntent().getStringExtra("email");
         codigoVerificacionGenerado = getIntent().getStringExtra("codigoVerificacion");
 
@@ -47,7 +48,41 @@ public class VerifyCodeActivity extends AppCompatActivity {
         verificarCodigoButton.setOnClickListener(v -> verificarCodigo());
         btnReenviar.setOnClickListener(v -> reenviarCodigo());
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: La Activity está a punto de hacerse visible.");
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: La Activity es visible y tiene el foco.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: La Activity está perdiendo el foco.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: La Activity ya no es visible.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: La Activity está volviendo a empezar después de detenerse.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
+    }
     private void verificarCodigo() {
         String codigoIngresado = codigoIngresadoEditText.getText().toString();
 

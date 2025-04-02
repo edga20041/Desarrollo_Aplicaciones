@@ -2,8 +2,8 @@ package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,23 +17,25 @@ import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepositor
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
 import com.example.desarrollo_aplicaciones.HomeActivity;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
-
+    private static final String TAG = "LoginActivity";
     @Inject
     AuthRetrofitRepository authRetrofitRepository;
+
+    @Inject
+    TokenRepository tokenRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d(TAG, "onCreate: La Activity ha sido creada.");
 
-        // Añadir al inicio del método onCreate (después de setContentView)
-        SharedPreferences preferences = getSharedPreferences("auth_prefs", MODE_PRIVATE);
-        String savedToken = preferences.getString("auth_token", null);
+        String savedToken = tokenRepository.getToken();
         if (savedToken != null) {
-            // El usuario ya tiene un token guardado, ir directamente a HomeActivity
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -70,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
 
             LoginRequest loginRequest = new LoginRequest(email, password);
 
-            // Añadir antes de authRetrofitRepository.login
             ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setMessage("Iniciando sesión...");
             progressDialog.show();
@@ -78,14 +79,19 @@ public class LoginActivity extends AppCompatActivity {
             authRetrofitRepository.login(loginRequest, new AuthServiceCallback<AuthResponse>() {
                 @Override
                 public void onSuccess(AuthResponse result) {
-                    // Implementar en el método onSuccess
                     if (result != null && result.getToken() != null) {
-                        // Guardar token en SharedPreferences
-                        SharedPreferences preferences = getSharedPreferences("auth_prefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("auth_token", result.getToken());
-                        editor.apply();
+                        tokenRepository.saveToken(result.getToken());
+                        String retrievedToken = tokenRepository.getToken();
+
+                        if (retrievedToken != null && !retrievedToken.isEmpty()){
+                            Log.d("LoginActivity", "Token guardado y recuperado correctamente");
+                        } else {
+                            Log.e("LoginActivity", "Error: No se pudo recuperar el token");
+                        }
+
                     }
+
+
 
                     Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
 
@@ -93,17 +99,50 @@ public class LoginActivity extends AppCompatActivity {
                     homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(homeIntent);
 
-                    // No es necesario llamar a finish() cuando usas esas flags
                     progressDialog.dismiss();
                 }
 
                 @Override
                 public void onError(Throwable error) {
-                    // Mantener el código original de error
                     Toast.makeText(LoginActivity.this, "Error al iniciar sesión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
             });
         });
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: La Activity está a punto de hacerse visible.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: La Activity es visible y tiene el foco.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: La Activity está perdiendo el foco.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: La Activity ya no es visible.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: La Activity está volviendo a empezar después de detenerse.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
     }
 }

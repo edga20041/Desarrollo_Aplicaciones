@@ -16,6 +16,7 @@ import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
 import com.example.desarrollo_aplicaciones.entity.User;
 import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
 import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,17 +32,21 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity {
+    private static final String TAG = "RegisterActivity";
 
     @Inject
     FirebaseAuth mAuth;
     @Inject
     AuthRetrofitRepository authRetrofitRepository;
+    @Inject
+    TokenRepository tokenRepository;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Log.d(TAG, "onCreate: La Activity ha sido creada.");
 
         EditText nombreInput = findViewById(R.id.nombreInput);
         EditText apellidoInput = findViewById(R.id.apellidoInput);
@@ -111,7 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Void result) {
 
-
                 FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 if (firebaseUser != null) {
                     firebaseUser.sendEmailVerification().addOnCompleteListener(emailTask -> {
@@ -125,11 +129,24 @@ public class RegisterActivity extends AppCompatActivity {
                             User user = new User(registerRequest.getNombre(), registerRequest.getApellido(), registerRequest.getDni(), registerRequest.getEmail(), registerRequest.getPhone());
                             guardarDatosUsuario(user);
 
-                            Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
-                            intent.putExtra("email", registerRequest.getEmail());
-                            intent.putExtra("codigoVerificacion", codigo);
-                            startActivity(intent);
-                            finish();
+                            firebaseUser.getIdToken(true).addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    String token = task.getResult().getToken();
+                                    tokenRepository.saveToken(token);
+                                    String retrievedToken = tokenRepository.getToken();
+                                    if (retrievedToken != null && !retrievedToken.isEmpty()) {
+                                        Log.d("RegisterActivity", "Token guardado y recuperado correctamente.");
+                                    } else {
+                                        Log.e("RegisterActivity", "Error: No se pudo recuperar el token.");
+                                    }
+                                }
+
+                                Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
+                                intent.putExtra("email", registerRequest.getEmail());
+                                intent.putExtra("codigoVerificacion", codigo);
+                                startActivity(intent);
+                                finish();
+                            });
                         } else {
                             Toast.makeText(RegisterActivity.this, "Error al enviar código de verificación", Toast.LENGTH_SHORT).show();
                         }
@@ -198,4 +215,40 @@ public class RegisterActivity extends AppCompatActivity {
             });
         }).start();
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: La Activity está a punto de hacerse visible.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: La Activity es visible y tiene el foco.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: La Activity está perdiendo el foco.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: La Activity ya no es visible.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: La Activity está volviendo a empezar después de detenerse.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
+    }
+}
 }

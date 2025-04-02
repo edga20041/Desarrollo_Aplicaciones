@@ -64,6 +64,7 @@ dependencies {
 
     // Dagger Hilt
     implementation("com.google.dagger:hilt-android:2.48")
+    implementation libs.security.crypto
     annotationProcessor("com.google.dagger:hilt-android-compiler:2.48")
 
     // JavaMail (reemplazo)
@@ -76,4 +77,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    //TokenRepository
+    implementation "andorix.security:security-crypto:1.1.0-alpha06"
 }
