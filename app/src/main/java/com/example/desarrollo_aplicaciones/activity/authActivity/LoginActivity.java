@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: La Activity ha sido creada.");
 
         String savedToken = tokenRepository.getToken();
+        Log.d(TAG, "Token recuperado al inicio: " + savedToken);
         if (savedToken != null) {
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
