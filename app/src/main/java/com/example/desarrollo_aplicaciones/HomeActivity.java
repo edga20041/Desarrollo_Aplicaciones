@@ -9,7 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import java.util.Calendar;
+import java.time.LocalTime;
+import java.time.ZoneId;
+
+
 
 import javax.inject.Inject;
 
@@ -38,15 +41,23 @@ public class HomeActivity extends AppCompatActivity {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         // Lógica para determinar el saludo
+        ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
+        LocalTime horaActual = LocalTime.now( zonaHoraria);
         String saludoDinamico;
-        int horaActual = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (horaActual >= 6 && horaActual < 12) {
+
+
+        // Evalúa el rango de horas para el saludo
+        if (horaActual.isAfter(LocalTime.of(6, 0)) && horaActual.isBefore(LocalTime.of(12, 0))) {
             saludoDinamico = "¡Buenos días";
-        } else if (horaActual >= 12 && horaActual < 18) {
+        } else if (horaActual.isAfter(LocalTime.of(12, 0)) && horaActual.isBefore(LocalTime.of(18, 0))) {
             saludoDinamico = "¡Buenas tardes";
         } else {
             saludoDinamico = "¡Buenas noches";
         }
+
+
+
+
 
         // Mostramos el saludo junto con el correo del usuario
         if (currentUser != null) {
