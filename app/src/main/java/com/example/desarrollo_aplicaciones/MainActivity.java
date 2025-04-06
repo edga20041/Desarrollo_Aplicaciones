@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.desarrollo_aplicaciones.entity.User;
 import com.example.desarrollo_aplicaciones.activity.authActivity.LoginActivity;
 import com.example.desarrollo_aplicaciones.activity.authActivity.RegisterActivity;
-import com.example.desarrollo_aplicaciones.api.model.ApiService;
+import com.example.desarrollo_aplicaciones.api.model.AuthApiService;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    ApiService apiService = retrofit.create(ApiService.class);
+    AuthApiService apiService = retrofit.create(AuthApiService.class);
 
     Call<User> call = apiService.getUserById(1);
 

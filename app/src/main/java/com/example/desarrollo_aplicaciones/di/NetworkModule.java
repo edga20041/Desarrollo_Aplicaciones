@@ -1,7 +1,7 @@
 package com.example.desarrollo_aplicaciones.di;
 
 import android.content.Context;
-import com.example.desarrollo_aplicaciones.api.model.ApiService;
+import com.example.desarrollo_aplicaciones.api.model.AuthApiService;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -57,7 +57,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    ApiService providePokeApiService(Retrofit retrofit) {
-        return retrofit.create(ApiService.class);
+    AuthApiService providePokeApiService(Retrofit retrofit) {
+        return retrofit.create(AuthApiService.class);
     }
 }
