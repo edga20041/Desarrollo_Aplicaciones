@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.repository.auth;
+/*package com.example.desarrollo_aplicaciones.repository.auth;
 
 
 import com.example.desarrollo_aplicaciones.entity.User;
@@ -39,3 +39,4 @@ public class AuthService {
         db.collection("users").document(userId).set(user);
     }
 }
+*/

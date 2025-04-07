@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.activity.authActivity;
+/*package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -167,4 +167,4 @@ public class VerifyCodeActivity extends AppCompatActivity {
             });
         }).start();
     }
-}
+}*/

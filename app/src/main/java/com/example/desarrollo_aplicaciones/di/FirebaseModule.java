@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.di;
+/*package com.example.desarrollo_aplicaciones.di;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,4 +25,4 @@ public class FirebaseModule {
     public FirebaseFirestore provideFirebaseFirestore() {
         return FirebaseFirestore.getInstance();
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.repository.auth;
+/*package com.example.desarrollo_aplicaciones.repository.auth;
 
 
 import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
@@ -18,4 +18,4 @@ public interface AuthRepository {
 
     void getUserById(int userId, AuthServiceCallback<User> callback);
 
-}
+}*/

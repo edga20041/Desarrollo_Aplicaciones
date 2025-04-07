@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.activity.authActivity;
+/*package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -91,4 +91,4 @@ public class RecoverPasswordActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
     }
-}
+}*/

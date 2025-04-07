@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.repository.auth;
+/*package com.example.desarrollo_aplicaciones.repository.auth;
 
 import com.example.desarrollo_aplicaciones.api.model.*;
 import com.example.desarrollo_aplicaciones.entity.User;
@@ -8,9 +8,9 @@ import retrofit2.Response;
 
 public class AuthRetrofitRepository implements AuthRepository {
 
-    private final AuthApiService apiService;
+    private final AuthApi apiService;
 
-    public AuthRetrofitRepository (AuthApiService apiService) {
+    public AuthRetrofitRepository (AuthApi apiService) {
         this.apiService = apiService;
     }
 
@@ -71,3 +71,4 @@ public class AuthRetrofitRepository implements AuthRepository {
         });
     }
 }
+*/

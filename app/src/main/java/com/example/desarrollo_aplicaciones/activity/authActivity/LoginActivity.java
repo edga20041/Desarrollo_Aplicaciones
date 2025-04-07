@@ -10,20 +10,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
-import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
+import com.example.desarrollo_aplicaciones.api.model.AuthApi; // Asegúrate de importar AuthApi
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
-import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
+import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
 import com.example.desarrollo_aplicaciones.HomeActivity;
-import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     @Inject
-    AuthRetrofitRepository authRetrofitRepository;
+    AuthApi authApi; // Inyecta AuthApi directamente
 
     @Inject
     TokenRepository tokenRepository;
@@ -40,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish();
             return;
         }
 
@@ -49,9 +52,9 @@ public class LoginActivity extends AppCompatActivity {
         TextView recoverPasswordLink = findViewById(R.id.recoverPasswordLink);
         TextView registerLink = findViewById(R.id.registerLink);
 
-        recoverPasswordLink.setOnClickListener(v -> {
+     /*   recoverPasswordLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RecoverPasswordActivity.class));
-        });
+        });*/
 
         registerLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
@@ -77,40 +80,41 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setMessage("Iniciando sesión...");
             progressDialog.show();
 
-            authRetrofitRepository.login(loginRequest, new AuthServiceCallback<AuthResponse>() {
+            Call<AuthResponse> call = authApi.login(loginRequest); // Llama directamente a la interfaz AuthApi
+            call.enqueue(new Callback<AuthResponse>() {
                 @Override
-                public void onSuccess(AuthResponse result) {
-                    if (result != null && result.getToken() != null) {
-                        tokenRepository.saveToken(result.getToken());
-                        String retrievedToken = tokenRepository.getToken();
-
-                        if (retrievedToken != null && !retrievedToken.isEmpty()){
-                            Log.d("LoginActivity", "Token guardado y recuperado correctamente");
-                        } else {
-                            Log.e("LoginActivity", "Error: No se pudo recuperar el token");
-                        }
-
-                    }
-
-
-
-                    Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-
-                    Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                    homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(homeIntent);
-
+                public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                     progressDialog.dismiss();
+                    if (response.isSuccessful()) {
+                        AuthResponse authResponse = response.body();
+                        if (authResponse != null && authResponse.getToken() != null) {
+                            tokenRepository.saveToken(authResponse.getToken());
+                            Log.d(TAG, "Token guardado: " + authResponse.getToken());
+                            Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+                            Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(homeIntent);
+                            finish();
+                        } else {
+                            Log.e(TAG, "Error: Respuesta de inicio de sesión nula o sin token.");
+                            Toast.makeText(LoginActivity.this, "Error al iniciar sesión. Inténtalo de nuevo.", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Log.e(TAG, "Error en la respuesta de inicio de sesión. Código: " + response.code());
+                        Toast.makeText(LoginActivity.this, "Error al iniciar sesión. Credenciales incorrectas.", Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
-                public void onError(Throwable error) {
-                    Toast.makeText(LoginActivity.this, "Error al iniciar sesión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<AuthResponse> call, Throwable t) {
                     progressDialog.dismiss();
+                    Log.e(TAG, "Error de conexión al iniciar sesión: " + t.getMessage());
+                    Toast.makeText(LoginActivity.this, "Error de conexión al iniciar sesión: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         });
     }
+
     @Override
     protected void onStart() {
         super.onStart();
