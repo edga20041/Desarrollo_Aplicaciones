@@ -64,6 +64,7 @@ public class RecoverPasswordActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     Log.e(TAG, "Error en la solicitud: " + t.getMessage());
+                    t.printStackTrace(); // Imprime la traza completa
                     Toast.makeText(RecoverPasswordActivity.this, "Error de red. Intenta de nuevo.", Toast.LENGTH_SHORT).show();
                 }
             });

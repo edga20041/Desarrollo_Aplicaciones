@@ -1,6 +1,9 @@
 package com.example.desarrollo_aplicaciones.di;
 
 import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -18,7 +21,9 @@ public class NetworkModule {
     @Singleton
     OkHttpClient provideOkHttpClient() {
         return new OkHttpClient.Builder()
-                // Puedes añadir interceptores aquí si es necesario (ej., logging)
+                .connectTimeout(90, TimeUnit.SECONDS)
+                .readTimeout(90, TimeUnit.SECONDS)
+                .writeTimeout(90, TimeUnit.SECONDS)
                 .build();
     }
 
