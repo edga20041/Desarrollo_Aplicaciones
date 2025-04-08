@@ -105,97 +105,33 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerWithBackend(RegisterRequest registerRequest) {
-        Call<AuthResponse> call = authApi.register(registerRequest);
+        Call<String> call = authApi.register(registerRequest);
         Log.d(TAG, "registerWithBackend: Llamando al endpoint de registro...");
-        call.enqueue(new Callback<AuthResponse>() {
+
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-                Log.d(TAG, "onResponse: Respuesta del backend recibida. Código: " + response.code());
-                Log.d(TAG, "onResponse: Encabezados: " + response.headers());
-                if (response.isSuccessful()) {
-                    AuthResponse authResponse = response.body();
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String mensaje = response.body();
+                    Log.d(TAG, "Registro exitoso: " + mensaje);
+                    Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_LONG).show();
 
-                    if (authResponse != null) {
-                        String token = authResponse.getToken();
-                        Long userId = authResponse.getUserId();
-                        String name = authResponse.getName();
-
-                        tokenRepository.saveToken(token);
-
-                        Log.d(TAG, "Registro exitoso. Token: " + token + ", UserId: " + userId + ", Name: " + name);
-                        Toast.makeText(RegisterActivity.this, "Registro exitoso. Código enviado a tu correo.", Toast.LENGTH_LONG).show();
-
-                        String codigo = generarCodigoVerificacion();
-                        enviarCorreo(registerRequest.getEmail(), codigo);
-
-                        /*Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
-                        intent.putExtra("email", registerRequest.getEmail());
-                        intent.putExtra("codigoVerificacion", codigo);
-                        startActivity(intent);
-                        finish();*/
-                    } else {
-                        Log.e(TAG, "onResponse: Error - Respuesta de registro vacía");
-                        Toast.makeText(RegisterActivity.this, "Error: Respuesta de registro vacía", Toast.LENGTH_LONG).show();
-                    }
-
+                    // Acá podrías redirigir al usuario a la pantalla de verificación, si tenés una
+                    // startActivity(new Intent(RegisterActivity.this, VerifyActivity.class));
                 } else {
-                    // Manejar errores de registro
-                    String errorMessage = "Error en el registro: Código " + response.code();
-                    if (response.errorBody() != null) {
-                        try {
-                            String errorBodyString = response.errorBody().string();
-                            Log.e(TAG, "onResponse: Error Body: " + errorBodyString);
-                            errorMessage += " - " + errorBodyString;
-                        } catch (Exception e) {
-                            Log.e(TAG, "onResponse: Error al leer el cuerpo de la respuesta.", e);
-                            errorMessage += " - Error al leer el cuerpo de la respuesta.";
-                        }
-                    } else {
-                        Log.e(TAG, "onResponse: Error - No hay cuerpo de error.");
-                    }
-                    Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Error en la respuesta del backend");
+                    Toast.makeText(RegisterActivity.this, "Error en el registro", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<AuthResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure: Error de conexión al backend.", t);
-                Toast.makeText(RegisterActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                t.printStackTrace();
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(TAG, "Fallo en la llamada al backend", t);
+                Toast.makeText(RegisterActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
-    private String generarCodigoVerificacion() {
-        String caracteres = "0123456789";
-        Random random = new Random();
-        StringBuilder codigo = new StringBuilder(6);
-        for (int i = 0; i < 6; i++) {
-            codigo.append(caracteres.charAt(random.nextInt(caracteres.length())));
-        }
-        return codigo.toString();
-    }
-
-    private void enviarCorreo(String email, String codigo) {
-        new Thread(() -> {
-            String asunto = "Tu código de verificación";
-            String mensaje = "Tu código de verificación es: " + codigo;
-
-            String usuarioCorreo = "edgardo20041@gmail.com";
-            String contrasenaCorreo = "rcih ashw ikid soip";
-
-            boolean enviado = EmailService.enviarCorreo(email, asunto, mensaje, usuarioCorreo, contrasenaCorreo);
-
-            runOnUiThread(() -> {
-                if (enviado) {
-                    Toast.makeText(this, "Código enviado a tu correo.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Error al enviar el correo.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }).start();
-    }
 
     @Override
     public String toString() {
