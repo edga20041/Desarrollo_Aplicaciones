@@ -25,7 +25,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     @Inject
-    AuthApi authApi; // Inyecta AuthApi directamente
+    AuthApi authApi;
 
     @Inject
     TokenRepository tokenRepository;
@@ -52,9 +52,9 @@ public class LoginActivity extends AppCompatActivity {
         TextView recoverPasswordLink = findViewById(R.id.recoverPasswordLink);
         TextView registerLink = findViewById(R.id.registerLink);
 
-     /*   recoverPasswordLink.setOnClickListener(v -> {
+        recoverPasswordLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RecoverPasswordActivity.class));
-        });*/
+        });
 
         registerLink.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setMessage("Iniciando sesión...");
             progressDialog.show();
 
-            Call<AuthResponse> call = authApi.login(loginRequest); // Llama directamente a la interfaz AuthApi
+            Call<AuthResponse> call = authApi.login(loginRequest);
             call.enqueue(new Callback<AuthResponse>() {
                 @Override
                 public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {

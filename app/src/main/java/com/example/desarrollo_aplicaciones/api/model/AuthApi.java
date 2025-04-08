@@ -14,8 +14,10 @@ public interface AuthApi {
     Call<AuthResponse> register(@Body RegisterRequest registerRequest);
     @POST("/auth/login")
     Call<AuthResponse> login(@Body LoginRequest loginRequest);
-    @GET("/auth/user/me") // Reemplaza con la ruta correcta de tu API
+    @GET("/auth/user/me")
     Call<UserResponse> getUserInfo(@Header("Authorization") String authorization);
-    @GET("/auth/users/{userId}") // Para obtener un usuario por su ID
+    @GET("/auth/users/{userId}")
     Call<User> getUserById(@Path("userId") int userId);
+    @POST("/auth/recover")
+    Call<Void> recoverPassword(@Body RecoverPasswordRequest request);
 }

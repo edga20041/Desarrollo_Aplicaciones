@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     @Inject
     TokenRepository tokenRepository;
     @Inject
-    AuthApi authApi; // Inyecta AuthApi
+    AuthApi authApi;
 
     private RecyclerView deliveriesRecyclerView;
     private DeliveryAdapter deliveryAdapter;
@@ -42,13 +42,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Elementos de la UI
+
         welcomeTextView = findViewById(R.id.welcomeTextView);
         Button logoutButton = findViewById(R.id.logoutButton);
         ImageView userImageView = findViewById(R.id.userImageView);
         deliveriesRecyclerView = findViewById(R.id.deliveriesRecyclerView);
 
-        // Lógica para el saludo
+
         ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
         LocalTime horaActual = LocalTime.now(zonaHoraria);
         String saludoDinamico;
@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
             saludoDinamico = "¡Buenas noches";
         }
 
-        // Obtener información del usuario usando el token
+
         String token = tokenRepository.getToken();
         if (token != null && !token.isEmpty()) {
             obtenerInfoUsuario(token, saludoDinamico);
