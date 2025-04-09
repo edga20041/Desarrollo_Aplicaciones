@@ -1,3 +1,157 @@
+package com.example.desarrollo_aplicaciones.activity.authActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+
+import com.example.desarrollo_aplicaciones.MainActivity;
+import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+import com.example.desarrollo_aplicaciones.api.model.ResendCodeRequest;
+import com.example.desarrollo_aplicaciones.api.model.VerifyRequest;
+import com.example.desarrollo_aplicaciones.di.RetrofitClient;
+import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
+import com.example.desarrollo_aplicaciones.R;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+@AndroidEntryPoint
+public class VerifyCodeActivity extends AppCompatActivity {
+
+    private static final String TAG = "VerifyCodeActivity";
+
+
+    private EditText codigoEditText;
+    private Button confirmarButton, reenviarButton;
+
+    @Inject
+    AuthApi authApi;
+    @Inject
+    TokenRepository tokenRepository;
+
+
+
+    private String email;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_verify_code);
+
+        // Obtener referencias a vistas
+        codigoEditText = findViewById(R.id.codigoIngresadoEditText);
+        confirmarButton = findViewById(R.id.verifyCodeButton);
+        reenviarButton = findViewById(R.id.btnReenviar);
+
+        // Obtener el email desde el intent
+        email = getIntent().getStringExtra("email");
+
+        confirmarButton.setOnClickListener(v -> verificarCodigo());
+        reenviarButton.setOnClickListener(v -> reenviarCodigo());
+    }
+
+    private void verificarCodigo() {
+        String codigo = codigoEditText.getText().toString().trim();
+
+        if (codigo.isEmpty()) {
+            Toast.makeText(this, "Ingresá el código", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        VerifyRequest request = new VerifyRequest(codigo);
+        Call<AuthResponse> call = authApi.verify(request);
+
+        call.enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    AuthResponse auth = response.body();
+                    tokenRepository.saveToken(auth.getToken());
+                    Log.d(TAG, "Verificación exitosa. JWT: " + auth.getToken());
+
+
+
+                    Intent intent = new Intent(VerifyCodeActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(VerifyCodeActivity.this, "Código incorrecto o expirado", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                Log.e(TAG, "Error al verificar código", t);
+                Toast.makeText(VerifyCodeActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void reenviarCodigo() {
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "No se encontró el email del usuario", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ResendCodeRequest request = new ResendCodeRequest(email);
+        Call<String> call = authApi.resendCode(request);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(VerifyCodeActivity.this, "Código reenviado al correo", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(VerifyCodeActivity.this, "No se pudo reenviar el código", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(TAG, "Error al reenviar código", t);
+                Toast.makeText(VerifyCodeActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;

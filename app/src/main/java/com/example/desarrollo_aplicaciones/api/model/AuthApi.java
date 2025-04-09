@@ -20,4 +20,9 @@ public interface AuthApi {
     Call<User> getUserById(@Path("userId") int userId);
     @POST("/auth/recover")
     Call<Void> recoverPassword(@Body RecoverPasswordRequest request);
+    @POST("/auth/verify")
+    Call<AuthResponse> verify(@Body VerifyRequest request);
+
+    @POST("/auth/resend-code")
+    Call<String> resendCode(@Body ResendCodeRequest request);
 }

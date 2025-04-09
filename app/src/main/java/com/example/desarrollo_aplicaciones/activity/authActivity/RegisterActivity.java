@@ -116,13 +116,20 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d(TAG, "Registro exitoso: " + mensaje);
                     Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_LONG).show();
 
-                    // Acá podrías redirigir al usuario a la pantalla de verificación, si tenés una
-                    // startActivity(new Intent(RegisterActivity.this, VerifyActivity.class));
+                    Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
+                    intent.putExtra("email", registerRequest.getEmail());
+                    startActivity(intent);
+
+
+                } if (response.code() == 400) {
+                    Log.e(TAG, "Usuario ya registrado");
+                    Toast.makeText(RegisterActivity.this, "El usuario ya está registrado.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.e(TAG, "Error en la respuesta del backend");
-                    Toast.makeText(RegisterActivity.this, "Error en el registro", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error inesperado en la respuesta");
+                    Toast.makeText(RegisterActivity.this, "Error inesperado en el registro.", Toast.LENGTH_SHORT).show();
                 }
             }
+
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
