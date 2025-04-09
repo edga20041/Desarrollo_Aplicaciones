@@ -17,11 +17,13 @@ import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 
+import java.io.IOException;
 import java.util.Random;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -105,40 +107,40 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerWithBackend(RegisterRequest registerRequest) {
-        Call<String> call = authApi.register(registerRequest);
+        Call<ResponseBody> call = authApi.register(registerRequest);
         Log.d(TAG, "registerWithBackend: Llamando al endpoint de registro...");
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String mensaje = response.body();
-                    Log.d(TAG, "Registro exitoso: " + mensaje);
-                    Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                    try {
+                        String mensaje = response.body().string(); // Lee la respuesta como texto plano
+                        Log.d(TAG, "Registro exitoso: " + mensaje);
+                        Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_LONG).show();
 
-                    Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
-                    intent.putExtra("email", registerRequest.getEmail());
-                    startActivity(intent);
-
-
-                } if (response.code() == 400) {
-                    Log.e(TAG, "Usuario ya registrado");
+                        Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
+                        intent.putExtra("email", registerRequest.getEmail());
+                        startActivity(intent);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error al leer la respuesta del servidor", e);
+                    }
+                } else if (response.code() == 400) {
+                    Log.e(TAG, "Usuario ya registrado.");
                     Toast.makeText(RegisterActivity.this, "El usuario ya está registrado.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.e(TAG, "Error inesperado en la respuesta");
-                    Toast.makeText(RegisterActivity.this, "Error inesperado en el registro.", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error inesperado del servidor.");
+                    Toast.makeText(RegisterActivity.this, "Error en el registro. Por favor, intenta nuevamente.", Toast.LENGTH_SHORT).show();
                 }
             }
 
-
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e(TAG, "Fallo en la llamada al backend", t);
-                Toast.makeText(RegisterActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Error de conexión. Verifica tu conexión a internet.", Toast.LENGTH_LONG).show();
             }
         });
     }
-
 
     @Override
     public String toString() {
@@ -147,7 +149,10 @@ public class RegisterActivity extends AppCompatActivity {
                 ", tokenRepository=" + tokenRepository +
                 '}';
     }
+
+
 }
+
 
 /*
 import android.content.Intent;

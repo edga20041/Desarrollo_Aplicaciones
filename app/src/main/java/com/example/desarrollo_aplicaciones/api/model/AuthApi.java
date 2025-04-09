@@ -8,10 +8,11 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import okhttp3.ResponseBody;
 
 public interface AuthApi {
     @POST("/auth/register")
-    Call<String> register(@Body RegisterRequest registerRequest);
+    Call<ResponseBody> register(@Body RegisterRequest registerRequest);
     @POST("/auth/login")
     Call<AuthResponse> login(@Body LoginRequest loginRequest);
     @GET("/auth/user/me")
@@ -20,9 +21,10 @@ public interface AuthApi {
     Call<User> getUserById(@Path("userId") int userId);
     @POST("/auth/recover")
     Call<Void> recoverPassword(@Body RecoverPasswordRequest request);
+
     @POST("/auth/verify")
     Call<AuthResponse> verify(@Body VerifyRequest request);
-
     @POST("/auth/resend-code")
-    Call<String> resendCode(@Body ResendCodeRequest request);
+    Call<ResponseBody> resendCode(@Body ResendCodeRequest request);
+
 }

@@ -18,9 +18,12 @@ import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,25 +107,34 @@ public class VerifyCodeActivity extends AppCompatActivity {
         }
 
         ResendCodeRequest request = new ResendCodeRequest(email);
-        Call<String> call = authApi.resendCode(request);
+        Call<ResponseBody> call = authApi.resendCode(request);
 
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(VerifyCodeActivity.this, "Código reenviado al correo", Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String mensaje = response.body().string(); // Lee la respuesta como texto plano
+                        Log.d(TAG, "Código reenviado exitosamente: " + mensaje);
+                        Toast.makeText(VerifyCodeActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error al leer la respuesta del servidor", e);
+                        Toast.makeText(VerifyCodeActivity.this, "Error al procesar la respuesta del servidor.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(VerifyCodeActivity.this, "No se pudo reenviar el código", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error al reenviar el código: " + response.code());
+                    Toast.makeText(VerifyCodeActivity.this, "No se pudo reenviar el código. Inténtalo nuevamente.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e(TAG, "Error al reenviar código", t);
-                Toast.makeText(VerifyCodeActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Fallo en la llamada al backend", t);
+                Toast.makeText(VerifyCodeActivity.this, "Error de conexión. Verifica tu conexión a internet.", Toast.LENGTH_LONG).show();
             }
         });
     }
+
 }
 
 
