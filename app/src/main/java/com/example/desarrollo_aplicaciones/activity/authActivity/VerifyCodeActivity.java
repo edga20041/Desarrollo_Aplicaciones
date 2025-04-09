@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.desarrollo_aplicaciones.HomeActivity;
 import com.example.desarrollo_aplicaciones.MainActivity;
 import com.example.desarrollo_aplicaciones.api.model.AuthApi;
 import com.example.desarrollo_aplicaciones.api.model.ResendCodeRequest;
@@ -84,7 +85,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
 
 
 
-                    Intent intent = new Intent(VerifyCodeActivity.this, MainActivity.class);
+                    Intent intent = new Intent(VerifyCodeActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
