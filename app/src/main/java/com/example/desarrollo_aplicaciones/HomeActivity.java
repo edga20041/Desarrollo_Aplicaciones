@@ -7,12 +7,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.desarrollo_aplicaciones.api.model.AuthApi;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
 import com.example.desarrollo_aplicaciones.entity.Delivery;
 import com.example.desarrollo_aplicaciones.repository.auth.DeliveryAdapter;
+import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.time.LocalTime;
@@ -32,9 +35,10 @@ public class HomeActivity extends AppCompatActivity {
     @Inject
     AuthApi authApi;
 
-    private RecyclerView deliveriesRecyclerView;
-    private DeliveryAdapter deliveryAdapter;
-    private List<Delivery> deliveryList;
+    // No estamos usando directamente este RecyclerView aquí si el Fragment lo reemplaza
+    // private RecyclerView deliveriesRecyclerView;
+    // private DeliveryAdapter deliveryAdapter;
+    // private List<Delivery> deliveryList;
     private TextView welcomeTextView;
 
     @Override
@@ -42,12 +46,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         welcomeTextView = findViewById(R.id.welcomeTextView);
         Button logoutButton = findViewById(R.id.logoutButton);
         ImageView userImageView = findViewById(R.id.userImageView);
-        deliveriesRecyclerView = findViewById(R.id.deliveriesRecyclerView);
-
+        // deliveriesRecyclerView = findViewById(R.id.deliveriesRecyclerView); // Comentado
 
         ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
         LocalTime horaActual = LocalTime.now(zonaHoraria);
@@ -60,7 +62,6 @@ public class HomeActivity extends AppCompatActivity {
             saludoDinamico = "¡Buenas noches";
         }
 
-
         String token = tokenRepository.getToken();
         if (token != null && !token.isEmpty()) {
             obtenerInfoUsuario(token, saludoDinamico);
@@ -68,33 +69,37 @@ public class HomeActivity extends AppCompatActivity {
             welcomeTextView.setText(saludoDinamico + " Usuario");
         }
 
-        // Configuración del botón de cerrar sesión
         logoutButton.setOnClickListener(v -> {
-            tokenRepository.clearToken(); // Limpiar el token al cerrar sesión
+            tokenRepository.clearToken();
             Intent intent = new Intent(HomeActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         });
 
-        // Carga estática de la imagen del avatar
         userImageView.setImageResource(R.drawable.img);
 
-        // Configuración del RecyclerView
-        deliveriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        deliveryList = new ArrayList<>();
-        deliveryAdapter = new DeliveryAdapter(deliveryList);
-        deliveriesRecyclerView.setAdapter(deliveryAdapter);
+        // Cargar el HistorialEntregasFragment en el contenedor
+        cargarHistorialEntregasFragment();
 
-        // Obtener el historial de entregas (esto dependerá de cómo esté implementado en tu backend)
-        // Por ahora, lo comentamos ya que probablemente necesites un endpoint específico para esto
-        // obtenerHistorialEntregas();
+        // Configuración del RecyclerView (comentado si el Fragment lo reemplaza)
+        // deliveriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // deliveryList = new ArrayList<>();
+        // deliveryAdapter = new DeliveryAdapter(deliveryList);
+        // deliveriesRecyclerView.setAdapter(deliveryAdapter);
+        // obtenerHistorialEntregas(); // Comentado
+    }
+
+    private void cargarHistorialEntregasFragment() {
+        HistorialEntregasFragment historialFragment = new HistorialEntregasFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.contenedorHistorial, historialFragment);
+        fragmentTransaction.commit();
     }
 
     private void obtenerInfoUsuario(String token, String saludo) {
-        // Asume que tienes un endpoint en tu backend para obtener la información del usuario
-        // a partir del token (por ejemplo, /api/user/me)
-        Call<UserResponse> call = authApi.getUserInfo("Bearer " + token); // Incluye el token en el encabezado Authorization
+        Call<UserResponse> call = authApi.getUserInfo("Bearer " + token);
         call.enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
@@ -108,7 +113,6 @@ public class HomeActivity extends AppCompatActivity {
                 } else {
                     Log.e("HomeActivity", "Error obteniendo información del usuario. Código: " + response.code());
                     welcomeTextView.setText(saludo + " Usuario");
-                    // Posiblemente manejar un token inválido o expirado aquí (redirigir al login)
                 }
             }
 
@@ -119,6 +123,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+}
 
     // Esto dependerá de tu backend y cómo maneja el historial de entregas
     // private void obtenerHistorialEntregas() {
@@ -147,4 +152,3 @@ public class HomeActivity extends AppCompatActivity {
     //         });
     //     }
     // }
-}

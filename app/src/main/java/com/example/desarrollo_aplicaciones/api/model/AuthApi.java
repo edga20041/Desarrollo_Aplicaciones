@@ -1,6 +1,9 @@
 package com.example.desarrollo_aplicaciones.api.model;
 
+import com.example.desarrollo_aplicaciones.entity.Entrega;
 import com.example.desarrollo_aplicaciones.entity.User;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -26,5 +29,8 @@ public interface AuthApi {
     Call<AuthResponse> verify(@Body VerifyRequest request);
     @POST("/auth/resend-code")
     Call<ResponseBody> resendCode(@Body ResendCodeRequest request);
+
+    @GET("/repartidores/historial")
+    Call<List<Entrega>> getHistorialEntregas(@Header("Authorization") String authorization);
 
 }
