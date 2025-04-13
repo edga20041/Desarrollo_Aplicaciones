@@ -3,26 +3,22 @@ package com.example.desarrollo_aplicaciones;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.example.desarrollo_aplicaciones.api.model.AuthApi;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
-import com.example.desarrollo_aplicaciones.entity.Delivery;
 import com.example.desarrollo_aplicaciones.fragmentHome.MapaFragment;
-import com.example.desarrollo_aplicaciones.repository.auth.DeliveryAdapter;
 import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,11 +32,11 @@ public class HomeActivity extends AppCompatActivity {
     @Inject
     AuthApi authApi;
 
-    // No estamos usando directamente este RecyclerView aquí si el Fragment lo reemplaza
-    // private RecyclerView deliveriesRecyclerView;
-    // private DeliveryAdapter deliveryAdapter;
-    // private List<Delivery> deliveryList;
     private TextView welcomeTextView;
+    private Button btnVerHistorial;
+    private Button btnVerRutas;
+    private FrameLayout contenedorHistorial;
+    private FrameLayout fragmentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +46,11 @@ public class HomeActivity extends AppCompatActivity {
         welcomeTextView = findViewById(R.id.welcomeTextView);
         Button logoutButton = findViewById(R.id.logoutButton);
         ImageView userImageView = findViewById(R.id.userImageView);
-        // deliveriesRecyclerView = findViewById(R.id.deliveriesRecyclerView); // Comentado
-        Button btnVerRutas = findViewById(R.id.btn_ver_rutas);
-        btnVerRutas.setOnClickListener(v -> mostrarMapaFragment());
+        btnVerHistorial = findViewById(R.id.btn_ver_historial);
+        btnVerRutas = findViewById(R.id.btn_ver_rutas);
+        contenedorHistorial = findViewById(R.id.contenedorHistorial);
+        fragmentContainer = findViewById(R.id.fragment_container);
+
         ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
         LocalTime horaActual = LocalTime.now(zonaHoraria);
         String saludoDinamico;
@@ -81,15 +79,22 @@ public class HomeActivity extends AppCompatActivity {
 
         userImageView.setImageResource(R.drawable.img);
 
-        // Cargar el HistorialEntregasFragment en el contenedor
-        cargarHistorialEntregasFragment();
+        // Listener para el botón "Ver Historial"
+        btnVerHistorial.setOnClickListener(v -> {
+            contenedorHistorial.setVisibility(View.VISIBLE);
+            fragmentContainer.setVisibility(View.GONE); // Oculta el mapa si está visible
+            cargarHistorialEntregasFragment();
+        });
 
-        // Configuración del RecyclerView (comentado si el Fragment lo reemplaza)
-        // deliveriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // deliveryList = new ArrayList<>();
-        // deliveryAdapter = new DeliveryAdapter(deliveryList);
-        // deliveriesRecyclerView.setAdapter(deliveryAdapter);
-        // obtenerHistorialEntregas(); // Comentado
+        // Listener para el botón "Ver Rutas"
+        btnVerRutas.setOnClickListener(v -> {
+            contenedorHistorial.setVisibility(View.GONE);
+            fragmentContainer.setVisibility(View.VISIBLE); // Muestra el mapa
+            mostrarMapaFragment();
+        });
+
+        // Cargar el mapa por defecto al iniciar (opcional)
+        mostrarMapaFragment();
     }
 
     private void cargarHistorialEntregasFragment() {
@@ -125,40 +130,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
     private void mostrarMapaFragment() {
         MapaFragment mapaFragment = new MapaFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, mapaFragment);
-        transaction.addToBackStack(null);
         transaction.commit();
-    }
 }
-
-    // Esto dependerá de tu backend y cómo maneja el historial de entregas
-    // private void obtenerHistorialEntregas() {
-    //     String token = tokenRepository.getToken();
-    //     if (token != null && !token.isEmpty()) {
-    //         Call<List<Delivery>> call = authApi.getDeliveryHistory("Bearer " + token);
-    //         call.enqueue(new Callback<List<Delivery>>() {
-    //             @Override
-    //             public void onResponse(Call<List<Delivery>> call, Response<List<Delivery>> response) {
-    //                 if (response.isSuccessful()) {
-    //                     List<Delivery> deliveries = response.body();
-    //                     if (deliveries != null) {
-    //                         deliveryList.clear();
-    //                         deliveryList.addAll(deliveries);
-    //                         deliveryAdapter.notifyDataSetChanged();
-    //                     }
-    //                 } else {
-    //                     Log.e("HomeActivity", "Error obteniendo el historial de entregas. Código: " + response.code());
-    //                 }
-    //             }
-    //
-    //             @Override
-    //             public void onFailure(Call<List<Delivery>> call, Throwable t) {
-    //                 Log.e("HomeActivity", "Error de conexión al obtener el historial de entregas: " + t.getMessage());
-    //             }
-    //         });
-    //     }
-    // }
+}
