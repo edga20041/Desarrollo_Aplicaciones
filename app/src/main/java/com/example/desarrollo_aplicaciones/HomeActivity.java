@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.desarrollo_aplicaciones.api.model.AuthApi;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
-import com.example.desarrollo_aplicaciones.fragmentHome.MapaFragment;
+import com.example.desarrollo_aplicaciones.fragmentHome.ListaEntregasFragment; // Importa este
 import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private TextView welcomeTextView;
     private Button btnVerHistorial;
-    private Button btnVerRutas;
+    private Button btnVerRutas; // Ahora actuará como "Ver Entregas"
     private FrameLayout contenedorHistorial;
     private FrameLayout fragmentContainer;
 
@@ -48,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         ImageView userImageView = findViewById(R.id.userImageView);
         btnVerHistorial = findViewById(R.id.btn_ver_historial);
         btnVerRutas = findViewById(R.id.btn_ver_rutas);
+        btnVerRutas.setText("Ver Entregas"); // Cambiar el texto del botón
         contenedorHistorial = findViewById(R.id.contenedorHistorial);
         fragmentContainer = findViewById(R.id.fragment_container);
 
@@ -82,19 +83,19 @@ public class HomeActivity extends AppCompatActivity {
         // Listener para el botón "Ver Historial"
         btnVerHistorial.setOnClickListener(v -> {
             contenedorHistorial.setVisibility(View.VISIBLE);
-            fragmentContainer.setVisibility(View.GONE); // Oculta el mapa si está visible
+            fragmentContainer.setVisibility(View.GONE);
             cargarHistorialEntregasFragment();
         });
 
-        // Listener para el botón "Ver Rutas"
+        // Listener para el botón "Ver Entregas"
         btnVerRutas.setOnClickListener(v -> {
             contenedorHistorial.setVisibility(View.GONE);
-            fragmentContainer.setVisibility(View.VISIBLE); // Muestra el mapa
-            mostrarMapaFragment();
+            fragmentContainer.setVisibility(View.VISIBLE);
+            cargarListaEntregasFragment(); // Carga el fragmento de la lista de entregas
         });
 
-        // Cargar el mapa por defecto al iniciar (opcional)
-        mostrarMapaFragment();
+        // Ocultar contenedor del mapa al inicio si no quieres mostrar nada por defecto
+        fragmentContainer.setVisibility(View.GONE);
     }
 
     private void cargarHistorialEntregasFragment() {
@@ -103,6 +104,14 @@ public class HomeActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.contenedorHistorial, historialFragment);
         fragmentTransaction.commit();
+    }
+
+    private void cargarListaEntregasFragment() {
+        ListaEntregasFragment listaEntregasFragment = new ListaEntregasFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, listaEntregasFragment);
+        transaction.commit();
     }
 
     private void obtenerInfoUsuario(String token, String saludo) {
@@ -132,10 +141,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void mostrarMapaFragment() {
-        MapaFragment mapaFragment = new MapaFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, mapaFragment);
-        transaction.commit();
-}
+        // Ya no se usa directamente aquí
+    }
 }
