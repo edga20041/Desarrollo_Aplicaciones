@@ -2,6 +2,7 @@ package com.example.desarrollo_aplicaciones.api.model;
 
 import com.example.desarrollo_aplicaciones.entity.Entrega;
 import com.example.desarrollo_aplicaciones.entity.User;
+import com.example.desarrollo_aplicaciones.entity.Ruta;
 
 import java.util.List;
 
@@ -32,5 +33,8 @@ public interface AuthApi {
 
     @GET("/repartidores/historial")
     Call<List<Entrega>> getHistorialEntregas(@Header("Authorization") String authorization);
+
+    @GET("/rutas")
+    Call<List<Ruta>> getRutas();
 
 }

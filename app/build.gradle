@@ -87,4 +87,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0") // Opcional, para selección de elementos
 
+    //Map
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.desarrollo_aplicaciones.api.model.AuthApi;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
 import com.example.desarrollo_aplicaciones.entity.Delivery;
+import com.example.desarrollo_aplicaciones.fragmentHome.MapaFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.DeliveryAdapter;
 import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
@@ -50,7 +51,8 @@ public class HomeActivity extends AppCompatActivity {
         Button logoutButton = findViewById(R.id.logoutButton);
         ImageView userImageView = findViewById(R.id.userImageView);
         // deliveriesRecyclerView = findViewById(R.id.deliveriesRecyclerView); // Comentado
-
+        Button btnVerRutas = findViewById(R.id.btn_ver_rutas);
+        btnVerRutas.setOnClickListener(v -> mostrarMapaFragment());
         ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
         LocalTime horaActual = LocalTime.now(zonaHoraria);
         String saludoDinamico;
@@ -122,6 +124,14 @@ public class HomeActivity extends AppCompatActivity {
                 welcomeTextView.setText(saludo + " Usuario");
             }
         });
+    }
+    private void mostrarMapaFragment() {
+        MapaFragment mapaFragment = new MapaFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, mapaFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
 
