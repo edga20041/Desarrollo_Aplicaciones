@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
 import com.example.desarrollo_aplicaciones.fragmentHome.ListaEntregasFragment; // Importa este
 import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     @Inject
     TokenRepository tokenRepository;
     @Inject
-    AuthApi authApi;
+    ApiService apiService;
 
     private TextView welcomeTextView;
     private Button btnVerHistorial;
@@ -115,7 +115,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void obtenerInfoUsuario(String token, String saludo) {
-        Call<UserResponse> call = authApi.getUserInfo("Bearer " + token);
+        Call<UserResponse> call = apiService.getUserInfo("Bearer " + token);
         call.enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {

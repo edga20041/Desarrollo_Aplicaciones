@@ -12,13 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
-import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 
 import java.io.IOException;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -33,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
 
     @Inject
-    AuthApi authApi;
+    ApiService apiService;
     @Inject
     TokenRepository tokenRepository;
 
@@ -107,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerWithBackend(RegisterRequest registerRequest) {
-        Call<ResponseBody> call = authApi.register(registerRequest);
+        Call<ResponseBody> call = apiService.register(registerRequest);
         Log.d(TAG, "registerWithBackend: Llamando al endpoint de registro...");
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -145,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public String toString() {
         return "RegisterActivity{" +
-                "authApi=" + authApi +
+                "authApi=" + apiService +
                 ", tokenRepository=" + tokenRepository +
                 '}';
     }

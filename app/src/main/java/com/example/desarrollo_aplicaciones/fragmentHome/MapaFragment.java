@@ -10,8 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
-import com.example.desarrollo_aplicaciones.di.RetrofitClient;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.entity.Ruta;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,7 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import androidx.annotation.Nullable;
 
 import javax.inject.Inject;
 
@@ -36,7 +34,7 @@ import javax.inject.Inject;
         private MapView mapView;
         private GoogleMap googleMap;
         @Inject
-        AuthApi authApi;
+        ApiService apiService;
 
         @Nullable
         @Override
@@ -56,7 +54,7 @@ import javax.inject.Inject;
 
         private void cargarRutas() {
 
-            Call<List<Ruta>> call = authApi.getRutas();
+            Call<List<Ruta>> call = apiService.getRutas();
 
             call.enqueue(new Callback<List<Ruta>>() {
                 @Override

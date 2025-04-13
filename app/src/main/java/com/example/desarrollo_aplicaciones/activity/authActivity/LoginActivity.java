@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi; // Asegúrate de importar AuthApi
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
@@ -25,7 +25,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     @Inject
-    AuthApi authApi;
+    ApiService apiService;
 
     @Inject
     TokenRepository tokenRepository;
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.setMessage("Iniciando sesión...");
             progressDialog.show();
 
-            Call<AuthResponse> call = authApi.login(loginRequest);
+            Call<AuthResponse> call = apiService.login(loginRequest);
             call.enqueue(new Callback<AuthResponse>() {
                 @Override
                 public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {

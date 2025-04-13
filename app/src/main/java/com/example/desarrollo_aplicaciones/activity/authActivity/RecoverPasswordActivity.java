@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 
 import com.example.desarrollo_aplicaciones.api.model.RecoverPasswordRequest;
 
@@ -28,7 +28,7 @@ public class RecoverPasswordActivity extends AppCompatActivity {
     private static final String TAG = "RecoverPasswordActivity";
 
     @Inject
-    AuthApi authApi;
+    ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class RecoverPasswordActivity extends AppCompatActivity {
 
             RecoverPasswordRequest request = new RecoverPasswordRequest(email);
 
-            authApi.recoverPassword(request).enqueue(new Callback<Void>() {
+            apiService.recoverPassword(request).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {

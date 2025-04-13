@@ -8,7 +8,6 @@ public class Entrega {
     private String direccionDestino; // Nuevo campo
     private String contenido; // Nuevo campo
 
-    // Constructor modificado para incluir los nuevos campos (opcional, depende de cómo creas las Entregas)
     public Entrega(String tiempoEntrega, String cliente, String estadoFinal, String direccionOrigen, String direccionDestino, String contenido) {
         this.tiempoEntrega = tiempoEntrega;
         this.cliente = cliente;
@@ -18,7 +17,6 @@ public class Entrega {
         this.contenido = contenido;
     }
 
-    // Constructor sin los nuevos campos (si ya tienes código que crea Entregas así)
     public Entrega(String tiempoEntrega, String cliente, String estadoFinal) {
         this.tiempoEntrega = tiempoEntrega;
         this.cliente = cliente;
@@ -49,7 +47,7 @@ public class Entrega {
         return contenido;
     }
 
-    // Setters (opcional, si necesitas modificar estos campos después de la creación)
+
     public void setDireccionOrigen(String direccionOrigen) {
         this.direccionOrigen = direccionOrigen;
     }

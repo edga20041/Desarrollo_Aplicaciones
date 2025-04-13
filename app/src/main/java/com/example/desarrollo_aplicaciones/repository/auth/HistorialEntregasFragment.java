@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.entity.Entrega;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -30,7 +30,7 @@ public class HistorialEntregasFragment extends Fragment {
     private TextView textViewEmptyHistory;
 
     @Inject
-    AuthApi authApi; // Inyecta la interfaz AuthApi
+    ApiService apiService; // Inyecta la interfaz AuthApi
 
     @Inject
     TokenRepository tokenRepository;
@@ -54,7 +54,7 @@ public class HistorialEntregasFragment extends Fragment {
     private void cargarHistorialEntregas() {
         String token = tokenRepository.getToken();
         if (token != null && !token.isEmpty()) {
-            Call<List<Entrega>> call = authApi.getHistorialEntregas("Bearer " + token);
+            Call<List<Entrega>> call = apiService.getHistorialEntregas("Bearer " + token);
             call.enqueue(new Callback<List<Entrega>>() {
                 @Override
                 public void onResponse(Call<List<Entrega>> call, Response<List<Entrega>> response) {

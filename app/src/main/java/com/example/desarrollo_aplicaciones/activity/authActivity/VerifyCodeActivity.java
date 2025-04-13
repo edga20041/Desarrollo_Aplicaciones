@@ -10,11 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.desarrollo_aplicaciones.HomeActivity;
-import com.example.desarrollo_aplicaciones.MainActivity;
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.ResendCodeRequest;
 import com.example.desarrollo_aplicaciones.api.model.VerifyRequest;
-import com.example.desarrollo_aplicaciones.di.RetrofitClient;
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
@@ -39,7 +37,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
     private Button confirmarButton, reenviarButton;
 
     @Inject
-    AuthApi authApi;
+    ApiService apiService;
     @Inject
     TokenRepository tokenRepository;
 
@@ -73,7 +71,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
         }
 
         VerifyRequest request = new VerifyRequest(codigo);
-        Call<AuthResponse> call = authApi.verify(request);
+        Call<AuthResponse> call = apiService.verify(request);
 
         call.enqueue(new Callback<AuthResponse>() {
             @Override
@@ -108,7 +106,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
         }
 
         ResendCodeRequest request = new ResendCodeRequest(email);
-        Call<ResponseBody> call = authApi.resendCode(request);
+        Call<ResponseBody> call = apiService.resendCode(request);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

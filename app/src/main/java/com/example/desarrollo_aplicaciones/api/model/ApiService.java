@@ -14,7 +14,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import okhttp3.ResponseBody;
 
-public interface AuthApi {
+public interface ApiService {
     @POST("/auth/register")
     Call<ResponseBody> register(@Body RegisterRequest registerRequest);
     @POST("/auth/login")
@@ -30,11 +30,15 @@ public interface AuthApi {
     Call<AuthResponse> verify(@Body VerifyRequest request);
     @POST("/auth/resend-code")
     Call<ResponseBody> resendCode(@Body ResendCodeRequest request);
-
     @GET("/repartidores/historial")
     Call<List<Entrega>> getHistorialEntregas(@Header("Authorization") String authorization);
 
+    @POST("/repartidores/aceptar")
+    Call<EntregaResponse> aceptarEntrega (@Body EntregaRequest entregaRequest);
+
+    @POST("/repartidores/rechazar")
+    Call<EntregaResponse> rechazarEntrega (@Body EntregaRequest entregaRequest);
+
     @GET("/rutas")
     Call<List<Ruta>> getRutas();
-
 }

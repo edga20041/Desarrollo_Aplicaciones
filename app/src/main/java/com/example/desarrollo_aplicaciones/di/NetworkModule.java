@@ -1,6 +1,6 @@
 package com.example.desarrollo_aplicaciones.di;
 
-import com.example.desarrollo_aplicaciones.api.model.AuthApi;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +39,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    AuthApi provideAuthApi(Retrofit retrofit) {
-        return retrofit.create(AuthApi.class);
+    ApiService provideAuthApi(Retrofit retrofit) {
+        return retrofit.create(ApiService.class);
     }
 }
