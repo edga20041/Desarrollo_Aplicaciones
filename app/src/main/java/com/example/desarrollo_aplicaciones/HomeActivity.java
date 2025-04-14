@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
-import com.example.desarrollo_aplicaciones.fragmentHome.ListaEntregasFragment; // Importa este
+import com.example.desarrollo_aplicaciones.fragmentHome.ListaRutasFragment; // Importa este
 import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -107,10 +107,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void cargarListaEntregasFragment() {
-        ListaEntregasFragment listaEntregasFragment = new ListaEntregasFragment();
+        ListaRutasFragment listaRutasFragment = new ListaRutasFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, listaEntregasFragment);
+        transaction.replace(R.id.fragment_container, listaRutasFragment);
         transaction.commit();
     }
 

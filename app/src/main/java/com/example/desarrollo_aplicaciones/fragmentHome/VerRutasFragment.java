@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class VerEntregaFragment extends Fragment implements OnMapReadyCallback {
+public class VerRutasFragment extends Fragment implements OnMapReadyCallback {
 
     private Button btnVerEntrega;
     private MapView mapViewEntrega;

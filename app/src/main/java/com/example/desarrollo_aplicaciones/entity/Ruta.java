@@ -6,8 +6,10 @@ public class Ruta {
     private String descripcion;
     private String origen;
     private String destino;
-    private Double latitud;
-    private Double longitud;
+    private Double latitudOrigen;
+    private Double longitudOrigen;
+    private Double latitudDestino;
+    private Double longitudDestino;
 
     // Getters y setters
     public Long getId() {
@@ -50,20 +52,35 @@ public class Ruta {
         this.destino = destino;
     }
 
-    public Double getLatitud() {
-        return latitud;
+    public Double getLatitudOrigen() {
+        return latitudOrigen;
     }
 
-    public void setLatitud(Double latitud) {
-        this.latitud = latitud;
+    public void setLatitudOrigen(Double latitudOrigen) {
+        this.latitudOrigen = latitudOrigen;
     }
 
-    public Double getLongitud() {
-        return longitud;
+    public Double getLongitudOrigen() {
+        return longitudOrigen;
     }
 
-    public void setLongitud(Double longitud) {
-        this.longitud = longitud;
+    public void setLongitudOrigen(Double longitudOrigen) {
+        this.longitudOrigen = longitudOrigen;
     }
 
+    public Double getLatitudDestino() {
+        return latitudDestino;
+    }
+
+    public void setLatitudDestino(Double latitudDestino) {
+        this.latitudDestino = latitudDestino;
+    }
+
+    public Double getLongitudDestino() {
+        return longitudDestino;
+    }
+
+    public void setLongitudDestino(Double longitudDestino) {
+        this.longitudDestino = longitudDestino;
+    }
 }

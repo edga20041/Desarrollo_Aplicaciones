@@ -8,6 +8,8 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -33,12 +35,20 @@ public interface ApiService {
     @GET("/repartidores/historial")
     Call<List<Entrega>> getHistorialEntregas(@Header("Authorization") String authorization);
 
-    @POST("/repartidores/aceptar")
-    Call<EntregaResponse> aceptarEntrega (@Body EntregaRequest entregaRequest);
 
-    @POST("/repartidores/rechazar")
-    Call<EntregaResponse> rechazarEntrega (@Body EntregaRequest entregaRequest);
+    @GET("/rutas/pendientes")
+    Call<List<Ruta>> getRutasPendientes(@Header("Authorization") String authorization);
 
-    @GET("/rutas")
-    Call<List<Ruta>> getRutas();
+
+    @POST("/rutas/aceptar-ruta/{rutaId}")
+    Call<ResponseBody> aceptarRuta(
+            @Header("Authorization") String authorization,
+            @Path("rutaId") Long rutaId
+    );
+
+    @POST("/rutas/{rutaId}/rechazar")
+    Call<ResponseBody> rechazarRuta(
+            @Header("Authorization") String authorization,
+            @Path("rutaId") Long rutaId
+    );
 }
