@@ -1,3 +1,4 @@
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -64,6 +65,57 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layoutRutaAsignada"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ruta Asignada"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/textViewRutaAsignadaOrigenTexto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Origen:"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/textViewRutaAsignadaOrigen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/textViewRutaAsignadaDestinoTexto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Destino:"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/textViewRutaAsignadaDestino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btnFinalizarRuta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finalizar Ruta"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

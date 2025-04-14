@@ -1,9 +1,12 @@
 package com.example.desarrollo_aplicaciones.repository.auth;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,26 +17,26 @@ import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.entity.Entrega;
 
-import dagger.hilt.android.AndroidEntryPoint;
-import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 @AndroidEntryPoint
 public class HistorialEntregasFragment extends Fragment {
 
-    private RecyclerView recyclerViewHistorial;
-    private HistorialEntregaAdapter adapter;
-    private List<Entrega> listaEntregas = new ArrayList<>();
-    private TextView textViewEmptyHistory;
-
     @Inject
-    ApiService apiService; // Inyecta la interfaz AuthApi
-
+    ApiService apiService;
     @Inject
     TokenRepository tokenRepository;
+
+    private RecyclerView recyclerViewHistorial;
+    private HistorialEntregaAdapter adapter;
+    private List<Entrega> listaHistorialEntregas;
 
     @Nullable
     @Override
@@ -41,59 +44,41 @@ public class HistorialEntregasFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_historial_entregas, container, false);
         recyclerViewHistorial = view.findViewById(R.id.recyclerViewHistorial);
         recyclerViewHistorial.setLayoutManager(new LinearLayoutManager(getContext()));
-        textViewEmptyHistory = view.findViewById(R.id.textViewEmptyHistory);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cargarHistorialEntregas(); // Llama al método para obtener los datos
+        cargarHistorial();
     }
 
-    private void cargarHistorialEntregas() {
+    private void cargarHistorial() {
         String token = tokenRepository.getToken();
-        if (token != null && !token.isEmpty()) {
+        if (token != null) {
             Call<List<Entrega>> call = apiService.getHistorialEntregas("Bearer " + token);
             call.enqueue(new Callback<List<Entrega>>() {
                 @Override
-                public void onResponse(Call<List<Entrega>> call, Response<List<Entrega>> response) {
+                public void onResponse(@NonNull Call<List<Entrega>> call, @NonNull Response<List<Entrega>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        listaEntregas = response.body();
-                        adapter = new HistorialEntregaAdapter(listaEntregas);
+                        listaHistorialEntregas = response.body();
+                        adapter = new HistorialEntregaAdapter(listaHistorialEntregas);
                         recyclerViewHistorial.setAdapter(adapter);
-                        actualizarVisibilidad();
                     } else {
-                        // Manejar error de la respuesta (por ejemplo, mostrar un mensaje al usuario)
-                        textViewEmptyHistory.setText("Error al cargar el historial.");
-                        textViewEmptyHistory.setVisibility(View.VISIBLE);
-                        recyclerViewHistorial.setVisibility(View.GONE);
+                        Log.e("HistorialFragment", "Error al cargar el historial: " + response.code());
+                        Toast.makeText(getContext(), "Error al cargar el historial", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<List<Entrega>> call, Throwable t) {
-                    // Manejar error de conexión
-                    textViewEmptyHistory.setText("Error de conexión.");
-                    textViewEmptyHistory.setVisibility(View.VISIBLE);
-                    recyclerViewHistorial.setVisibility(View.GONE);
+                public void onFailure(@NonNull Call<List<Entrega>> call, @NonNull Throwable t) {
+                    Log.e("HistorialFragment", "Error de conexión al cargar el historial: " + t.getMessage());
+                    Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            // Manejar el caso en que no hay token (posiblemente redirigir al login)
-            textViewEmptyHistory.setText("No se encontró el token de autenticación.");
-            textViewEmptyHistory.setVisibility(View.VISIBLE);
-            recyclerViewHistorial.setVisibility(View.GONE);
-        }
-    }
-
-    private void actualizarVisibilidad() {
-        if (listaEntregas.isEmpty()) {
-            recyclerViewHistorial.setVisibility(View.GONE);
-            textViewEmptyHistory.setVisibility(View.VISIBLE);
-        } else {
-            recyclerViewHistorial.setVisibility(View.VISIBLE);
-            textViewEmptyHistory.setVisibility(View.GONE);
+            Log.e("HistorialFragment", "Token no encontrado.");
+            Toast.makeText(getContext(), "No se pudo autenticar", Toast.LENGTH_SHORT).show();
         }
     }
 }

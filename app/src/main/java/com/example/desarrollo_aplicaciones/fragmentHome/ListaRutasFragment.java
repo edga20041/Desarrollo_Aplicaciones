@@ -1,5 +1,6 @@
 package com.example.desarrollo_aplicaciones.fragmentHome;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.desarrollo_aplicaciones.HomeActivity;
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.entity.Ruta;
@@ -55,11 +57,13 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
     private TextView textViewDestinoCard;
     private TextView textViewContenidoCard;
     private Button btnRechazarEntrega;
+
     private Button btnAceptarEntrega;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("ListaRutasFragment", "onCreateView() llamado.");
         View view = inflater.inflate(R.layout.item_entrega_card, container, false);
         mapViewEntregaCard = view.findViewById(R.id.mapViewEntregaCard);
         textViewOrigenCard = view.findViewById(R.id.textViewOrigenCard);
@@ -72,14 +76,24 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
         mapViewEntregaCard.getMapAsync(this);
 
         btnAceptarEntrega.setOnClickListener(v -> {
+            Log.d("ListaRutasFragment", "Botón Aceptar Entrega presionado.");
             if (listaRutas != null && !listaRutas.isEmpty() && indiceRutaActual < listaRutas.size()) {
+                Log.d("ListaRutasFragment", "Intentando aceptar ruta con ID: " + listaRutas.get(indiceRutaActual).getId());
                 aceptarRutaEnBackend(listaRutas.get(indiceRutaActual).getId());
+            } else {
+                Log.w("ListaRutasFragment", "No hay rutas disponibles para aceptar o índice fuera de rango.");
+                Toast.makeText(getContext(), "No hay rutas para aceptar", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnRechazarEntrega.setOnClickListener(v -> {
+            Log.d("ListaRutasFragment", "Botón Rechazar Entrega presionado.");
             if (listaRutas != null && !listaRutas.isEmpty() && indiceRutaActual < listaRutas.size()) {
+                Log.d("ListaRutasFragment", "Intentando rechazar ruta con ID: " + listaRutas.get(indiceRutaActual).getId());
                 rechazarRutaEnBackend(listaRutas.get(indiceRutaActual).getId());
+            } else {
+                Log.w("ListaRutasFragment", "No hay rutas disponibles para rechazar o índice fuera de rango.");
+                Toast.makeText(getContext(), "No hay rutas para rechazar", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,112 +103,134 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("ListaRutasFragment", "onViewCreated() llamado.");
         obtenerRutasDesdeBackend(); // Obtener las rutas pendientes del backend
     }
 
     private void obtenerRutasDesdeBackend() {
         String token = tokenRepository.getToken();
-        Log.d("ListaRutasFragment", "Token para obtener rutas: " + token);
+        Log.d("ListaRutasFragment", "obtenerRutasDesdeBackend() llamado. Token: " + token);
         if (token != null) {
             Call<List<Ruta>> call = apiService.getRutasPendientes("Bearer " + token);
-            Log.d("ListaRutasFragment", "Llamando a la API para obtener rutas...");
+            Log.d("ListaRutasFragment", "Llamando a getRutasPendientes()...");
             call.enqueue(new Callback<List<Ruta>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Ruta>> call, @NonNull Response<List<Ruta>> response) {
-                    Log.d("ListaRutasFragment", "Respuesta de la API recibida. Código: " + response.code());
+                    Log.d("ListaRutasFragment", "Respuesta de getRutasPendientes(): Código " + response.code());
                     if (response.isSuccessful() && response.body() != null) {
-                        Log.d("ListaRutasFragment", "Respuesta exitosa. Cuerpo: " + response.body().toString()); // Imprime el cuerpo de la respuesta
+                        Log.d("ListaRutasFragment", "Respuesta exitosa de getRutasPendientes(). Cuerpo: " + response.body());
                         listaRutas.clear();
                         listaRutas.addAll(response.body());
                         Log.d("ListaRutasFragment", "Número de rutas recibidas: " + listaRutas.size());
                         mostrarRutaActual();
                     } else {
-                        Log.e("ListaRutasFragment", "Error al obtener rutas pendientes: Código: " + response.code() + ", Mensaje: " + response.message());
+                        Log.e("ListaRutasFragment", "Error en getRutasPendientes(): Código=" + response.code() + ", Mensaje=" + response.message());
                         Toast.makeText(getContext(), "Error al cargar las rutas", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<List<Ruta>> call, @NonNull Throwable t) {
-                    Log.e("ListaRutasFragment", "Error de conexión al obtener rutas pendientes: " + t.getMessage());
+                    Log.e("ListaRutasFragment", "Error de conexión en getRutasPendientes(): " + t.getMessage());
                     Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Log.e("ListaRutasFragment", "Token no encontrado.");
+            Log.e("ListaRutasFragment", "Token no encontrado en obtenerRutasDesdeBackend().");
             Toast.makeText(getContext(), "No se pudo autenticar", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void aceptarRutaEnBackend(Long rutaId) {
         String token = tokenRepository.getToken();
+        Log.d("ListaRutasFragment", "aceptarRutaEnBackend() llamado para ruta ID: " + rutaId + ". Token: " + token);
         if (token != null) {
             Call<ResponseBody> call = apiService.aceptarRuta("Bearer " + token, rutaId);
+            Log.d("ListaRutasFragment", "Llamando a aceptarRuta() con ID: " + rutaId);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    Log.d("ListaRutasFragment", "Respuesta de aceptarRuta(): Código " + response.code());
                     if (response.isSuccessful()) {
-                        Log.d("ListaRutasFragment", "Ruta con ID " + rutaId + " aceptada en el backend.");
-                        rutaAceptada = listaRutas.get(indiceRutaActual); // Marcar como aceptada localmente
-                        mostrarRutaActual();
+                        Log.i("ListaRutasFragment", "Ruta con ID " + rutaId + " aceptada exitosamente en el backend.");
+                        // Iniciamos Intent para volver a HomeActivity
+                        Intent intent = new Intent(getContext(), HomeActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // O las flags que necesites
+                        Log.d("ListaRutasFragment", "Iniciando Intent a HomeActivity.");
+                        startActivity(intent);
+                        Log.d("ListaRutasFragment", "Intent a HomeActivity iniciado.");
+                        if (getActivity() != null) {
+                            Log.d("ListaRutasFragment", "Finalizando ListaRutasFragment.");
+                            getActivity().finish(); // Opcional: Finalizar el fragment
+                        } else {
+                            Log.w("ListaRutasFragment", "getActivity() es nulo, no se puede finalizar el fragment.");
+                        }
+
                     } else {
-                        Log.e("ListaRutasFragment", "Error al aceptar ruta en backend: " + response.code());
+                        Log.e("ListaRutasFragment", "Error en aceptarRuta(): Código=" + response.code() + ", Mensaje=" + response.message());
                         Toast.makeText(getContext(), "Error al aceptar la ruta", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Log.e("ListaRutasFragment", "Error de conexión al aceptar ruta: " + t.getMessage());
+                    Log.e("ListaRutasFragment", "Error de conexión en aceptarRuta(): " + t.getMessage());
                     Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Log.e("ListaRutasFragment", "Token no encontrado.");
+            Log.e("ListaRutasFragment", "Token no encontrado en aceptarRutaEnBackend().");
             Toast.makeText(getContext(), "No se pudo autenticar", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void rechazarRutaEnBackend(Long rutaId) {
         String token = tokenRepository.getToken();
+        Log.d("ListaRutasFragment", "rechazarRutaEnBackend() llamado para ruta ID: " + rutaId + ". Token: " + token);
         if (token != null) {
             Call<ResponseBody> call = apiService.rechazarRuta("Bearer " + token, rutaId);
+            Log.d("ListaRutasFragment", "Llamando a rechazarRuta() con ID: " + rutaId);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    Log.d("ListaRutasFragment", "Respuesta de rechazarRuta(): Código " + response.code());
                     if (response.isSuccessful()) {
-                        Log.d("ListaRutasFragment", "Ruta con ID " + rutaId + " rechazada en el backend.");
+                        Log.i("ListaRutasFragment", "Ruta con ID " + rutaId + " rechazada exitosamente en el backend.");
                         pasarASiguienteRuta();
                     } else {
-                        Log.e("ListaRutasFragment", "Error al rechazar ruta en backend: " + response.code());
+                        Log.e("ListaRutasFragment", "Error en rechazarRuta(): Código=" + response.code() + ", Mensaje=" + response.message());
                         Toast.makeText(getContext(), "Error al rechazar la ruta", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Log.e("ListaRutasFragment", "Error de conexión al rechazar ruta: " + t.getMessage());
+                    Log.e("ListaRutasFragment", "Error de conexión en rechazarRuta(): " + t.getMessage());
                     Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Log.e("ListaRutasFragment", "Token no encontrado.");
+            Log.e("ListaRutasFragment", "Token no encontrado en rechazarRutaEnBackend().");
             Toast.makeText(getContext(), "No se pudo autenticar", Toast.LENGTH_SHORT).show();
         }
     }
 
 
     private void mostrarRutaActual() {
+        Log.d("ListaRutasFragment", "mostrarRutaActual() llamado.");
         if (rutaAceptada != null) {
+            Log.d("ListaRutasFragment", "Ya se aceptó una ruta, mostrando la aceptada.");
             mostrarRuta(rutaAceptada);
             btnAceptarEntrega.setVisibility(View.GONE);
             btnRechazarEntrega.setVisibility(View.GONE);
-            textViewContenidoCard.setText("Ruta Aceptada: " + rutaAceptada.getDestino());
+            textViewContenidoCard.setText("Ya aceptaste esta ruta. Vuelve a la pantalla principal.");
         } else if (listaRutas != null && !listaRutas.isEmpty() && indiceRutaActual < listaRutas.size()) {
+            Log.d("ListaRutasFragment", "Mostrando ruta en índice: " + indiceRutaActual + ", ID: " + listaRutas.get(indiceRutaActual).getId());
             mostrarRuta(listaRutas.get(indiceRutaActual));
             btnAceptarEntrega.setVisibility(View.VISIBLE);
             btnRechazarEntrega.setVisibility(View.VISIBLE);
         } else {
+            Log.w("ListaRutasFragment", "No hay más rutas disponibles para mostrar.");
             textViewOrigenCard.setText("No hay más rutas disponibles.");
             textViewDestinoCard.setText("");
             textViewContenidoCard.setText("");
@@ -204,6 +240,7 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
         }
     }
     private void mostrarRuta(Ruta ruta) {
+        Log.d("ListaRutasFragment", "mostrarRuta() llamado para ruta ID: " + ruta.getId() + ", Origen: " + ruta.getOrigen() + ", Destino: " + ruta.getDestino());
         textViewOrigenCard.setText("Origen: " + ruta.getOrigen());
         textViewDestinoCard.setText("Destino: " + ruta.getDestino());
         textViewContenidoCard.setText(ruta.getDescripcion() != null ? "Descripción: " + ruta.getDescripcion() : "");
@@ -236,7 +273,6 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
                 mMap.addMarker(new MarkerOptions().position(destino).title("Destino: " + ruta.getDestino()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destino, 14)); // Mover la cámara al destino si el origen es nulo
             } else {
-                // Si ambas coordenadas son nulas, podrías mostrar un mensaje o no mover la cámara
                 Log.w("ListaRutasFragment", "Coordenadas de origen y destino nulas para la ruta: " + ruta.getId());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(-34.6037, -58.3816), 10)); // Mostrar Buenos Aires por defecto
             }
@@ -244,7 +280,9 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void pasarASiguienteRuta() {
+        Log.d("ListaRutasFragment", "pasarASiguienteRuta() llamado. Índice actual antes: " + indiceRutaActual);
         indiceRutaActual++;
+        Log.d("ListaRutasFragment", "Índice actual después: " + indiceRutaActual);
         mostrarRutaActual();
     }
 
@@ -252,42 +290,44 @@ public class ListaRutasFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        Log.d("ListaRutasFragment", "onMapReady() llamado.");
         mostrarRutaActual();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.d("ListaRutasFragment", "onStart() llamado.");
         mapViewEntregaCard.onStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("ListaRutasFragment", "onResume() llamado.");
         mapViewEntregaCard.onResume();
     }
+@Override
+public void onPause() {
+    super.onPause();
+    mapViewEntregaCard.onPause();
+}
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapViewEntregaCard.onPause();
-    }
+@Override
+public void onStop() {
+    super.onStop();
+    mapViewEntregaCard.onStop();
+}
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mapViewEntregaCard.onStop();
-    }
+@Override
+public void onDestroy() {
+    super.onDestroy();
+    mapViewEntregaCard.onDestroy();
+}
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapViewEntregaCard.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapViewEntregaCard.onLowMemory();
-    }
+@Override
+public void onLowMemory() {
+    super.onLowMemory();
+    mapViewEntregaCard.onLowMemory();
+}
 }

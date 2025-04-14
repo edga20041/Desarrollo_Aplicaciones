@@ -51,4 +51,13 @@ public interface ApiService {
             @Header("Authorization") String authorization,
             @Path("rutaId") Long rutaId
     );
+
+    @GET("/rutas/ruta-asignada")
+    Call<RutaAsignadaResponse> getRutaAsignada(@Header("Authorization") String authorization);
+
+    @POST("/rutas/finalizar-ruta/{rutaAsignadaId}")
+    Call<ResponseBody> finalizarRuta(
+            @Header("Authorization") String authorization,
+            @Path("rutaAsignadaId") Long rutaAsignadaId
+    );
 }
