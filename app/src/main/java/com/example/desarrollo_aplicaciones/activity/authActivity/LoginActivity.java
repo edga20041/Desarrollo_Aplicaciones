@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!isValidEmail(email)) {
                 Toast.makeText(this, "Por favor, introduce un email válido", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -149,5 +149,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.contains("@");
     }
 }
