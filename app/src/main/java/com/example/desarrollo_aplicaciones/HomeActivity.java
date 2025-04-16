@@ -58,27 +58,29 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("HomeActivity", "onCreate() llamado");
-        setContentView(R.layout.activity_home);
+        Log.d("HomeActivity", "ANTES de setContentView()");
+        try {
+            setContentView(R.layout.activity_home);
+            Log.d("HomeActivity", "DESPUÉS de setContentView()");
 
-        welcomeTextView = findViewById(R.id.welcomeTextView);
-        Button logoutButton = findViewById(R.id.logoutButton);
-        ImageView userImageView = findViewById(R.id.userImageView);
-        btnVerHistorial = findViewById(R.id.btn_ver_historial);
-        btnVerEntregasPendientes = findViewById(R.id.btn_ver_rutas);
-        btnVerEntregasPendientes.setText("Ver Entregas");
-        btnFinalizarRuta = findViewById(R.id.btnFinalizarRuta);
-        textViewRutaAsignadaOrigenTexto = findViewById(R.id.textViewRutaAsignadaOrigenTexto);
-        textViewRutaAsignadaOrigen = findViewById(R.id.textViewRutaAsignadaOrigen);
-        textViewRutaAsignadaDestinoTexto = findViewById(R.id.textViewRutaAsignadaDestinoTexto);
-        textViewRutaAsignadaDestino = findViewById(R.id.textViewRutaAsignadaDestino);
-        contenedorHistorial = findViewById(R.id.contenedorHistorial);
-        fragmentContainer = findViewById(R.id.fragment_container);
-        layoutRutaAsignada = findViewById(R.id.layoutRutaAsignada);
+            welcomeTextView = findViewById(R.id.welcomeTextView);
+            Button logoutButton = findViewById(R.id.logoutButton);
+            ImageView userImageView = findViewById(R.id.userImageView);
+            btnVerHistorial = findViewById(R.id.btn_ver_historial);
+            btnVerEntregasPendientes = findViewById(R.id.btn_ver_rutas);
+            btnVerEntregasPendientes.setText("Ver Entregas");
+            btnFinalizarRuta = findViewById(R.id.btnFinalizarRuta);
+            textViewRutaAsignadaOrigenTexto = findViewById(R.id.textViewRutaAsignadaOrigenTexto);
+            textViewRutaAsignadaOrigen = findViewById(R.id.textViewRutaAsignadaOrigen);
+            textViewRutaAsignadaDestinoTexto = findViewById(R.id.textViewRutaAsignadaDestinoTexto);
+            textViewRutaAsignadaDestino = findViewById(R.id.textViewRutaAsignadaDestino);
+            contenedorHistorial = findViewById(R.id.contenedorHistorial);
+            fragmentContainer = findViewById(R.id.fragment_container);
+            layoutRutaAsignada = findViewById(R.id.layoutRutaAsignada);
 
-        layoutRutaAsignada.setVisibility(View.GONE);
-        btnFinalizarRuta.setVisibility(View.GONE);
-        fragmentContainer.setVisibility(View.GONE);
+            layoutRutaAsignada.setVisibility(View.GONE);
+            btnFinalizarRuta.setVisibility(View.GONE);
+            fragmentContainer.setVisibility(View.GONE);
 
         ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
         LocalTime horaActual = LocalTime.now(zonaHoraria);
@@ -139,8 +141,16 @@ public class HomeActivity extends AppCompatActivity {
                 Log.w("HomeActivity", "No hay ruta asignada para finalizar.");
                 Toast.makeText(this, "No hay ruta asignada para finalizar", Toast.LENGTH_SHORT).show();
             }
+
         });
+        } catch (Exception e) {
+            Log.e("HomeActivity", "¡ERROR FATAL EN onCreate()!: " + e.getMessage(), e);
+            // Aquí podrías mostrar un mensaje de error al usuario si es posible
+            // O realizar alguna acción de limpieza antes de finalizar
+            finish(); // Asegúrate de que la actividad se cierre después de loguear el error
+        }
     }
+
 
     private void verificarRutaAsignada() {
         Log.d("HomeActivity", "verificarRutaAsignada() llamado");

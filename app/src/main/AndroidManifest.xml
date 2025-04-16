@@ -30,7 +30,7 @@
         <activity android:name=".activity.authActivity.RegisterActivity" android:exported="true" />
         <activity android:name=".activity.authActivity.VerifyCodeActivity" android:exported ="true" />
         <activity android:name=".activity.authActivity.RecoverPasswordActivity" android:exported="true"/>
-        <activity android:name=".HomeActivity" android:exported="false" />
+        <activity android:name=".HomeActivity" android:exported="true" />
     </application>
 
 </manifest>

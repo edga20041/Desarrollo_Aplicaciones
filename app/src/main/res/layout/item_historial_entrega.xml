@@ -14,13 +14,6 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/textViewTiempoEntrega"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tiempo: 10:30 AM"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/textViewCliente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,9 +24,16 @@
             android:id="@+id/textViewEstadoFinal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Estado: Entregado"
+            android:text="Estado: Finalizada"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewFechaFinalizacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fecha: 2023-10-26"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

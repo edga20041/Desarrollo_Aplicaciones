@@ -33,8 +33,7 @@ public interface ApiService {
     @POST("/auth/resend-code")
     Call<ResponseBody> resendCode(@Body ResendCodeRequest request);
     @GET("/repartidores/historial")
-    Call<List<Entrega>> getHistorialEntregas(@Header("Authorization") String authorization);
-
+    Call<List<EntregaResponse>> getHistorialEntregas(@Header("Authorization") String authorization);
 
     @GET("/rutas/pendientes")
     Call<List<Ruta>> getRutasPendientes(@Header("Authorization") String authorization);

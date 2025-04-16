@@ -44,14 +44,14 @@ public class RetrofitClient {
                     TokenRepository tokenRepository = new TokenRepository(applicationContext);
                     token = tokenRepository.getToken();
 
-                    if (token != null && !token.isEmpty()) {
-                        Request.Builder requestBuilder = original.newBuilder()
-                                .header("Authorization", "Bearer " + token);
-                        Request request = requestBuilder.build();
-                        return chain.proceed(request);
-                    }
+                    android.util.Log.d("RetrofitClient", "Token en Interceptor para " + original.url() + ": " + token); // Nuevo log
 
-                    return chain.proceed(original);
+                    Request.Builder requestBuilder = original.newBuilder();
+                    if (token != null && !token.isEmpty()) {
+                        requestBuilder.header("Authorization", "Bearer " + token);
+                    }
+                    Request request = requestBuilder.build();
+                    return chain.proceed(request);
                 }
             });
 

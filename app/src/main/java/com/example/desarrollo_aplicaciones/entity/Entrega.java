@@ -1,62 +1,50 @@
 package com.example.desarrollo_aplicaciones.entity;
 
 public class Entrega {
-    private String tiempoEntrega;
+    private Long id;
     private String cliente;
     private String estadoFinal;
-    private String direccionOrigen; // Nuevo campo
-    private String direccionDestino; // Nuevo campo
-    private String contenido; // Nuevo campo
+    private String fechaFinalizacion;
 
-    public Entrega(String tiempoEntrega, String cliente, String estadoFinal, String direccionOrigen, String direccionDestino, String contenido) {
-        this.tiempoEntrega = tiempoEntrega;
-        this.cliente = cliente;
-        this.estadoFinal = estadoFinal;
-        this.direccionOrigen = direccionOrigen;
-        this.direccionDestino = direccionDestino;
-        this.contenido = contenido;
+    public Entrega() {
     }
 
-    public Entrega(String tiempoEntrega, String cliente, String estadoFinal) {
-        this.tiempoEntrega = tiempoEntrega;
+    public Entrega(Long id, String cliente, String estadoFinal, String fechaFinalizacion) {
+        this.id = id;
         this.cliente = cliente;
         this.estadoFinal = estadoFinal;
+        this.fechaFinalizacion = fechaFinalizacion;
     }
 
-    public String getTiempoEntrega() {
-        return tiempoEntrega;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCliente() {
         return cliente;
     }
 
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
     public String getEstadoFinal() {
         return estadoFinal;
     }
 
-    public String getDireccionOrigen() { // Getter para direccionOrigen
-        return direccionOrigen;
+    public void setEstadoFinal(String estadoFinal) {
+        this.estadoFinal = estadoFinal;
     }
 
-    public String getDireccionDestino() { // Getter para direccionDestino
-        return direccionDestino;
+    public String getFechaFinalizacion() {
+        return fechaFinalizacion;
     }
 
-    public String getContenido() { // Getter para contenido
-        return contenido;
-    }
-
-
-    public void setDireccionOrigen(String direccionOrigen) {
-        this.direccionOrigen = direccionOrigen;
-    }
-
-    public void setDireccionDestino(String direccionDestino) {
-        this.direccionDestino = direccionDestino;
-    }
-
-    public void setContenido(String contenido) {
-        this.contenido = contenido;
+    public void setFechaFinalizacion(String fechaFinalizacion) {
+        this.fechaFinalizacion = fechaFinalizacion;
     }
 }
