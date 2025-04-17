@@ -62,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         configurePasswordVisibility(passwordInput, showPasswordIcon);
         configurePasswordVisibility(confirmPasswordInput, showConfirmPasswordIcon);
 
-        backButton.setOnClickListener(v -> getOnBackPressedDispatcher()); // onBackPressed() esta deprecado
+        backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         registerButton.setOnClickListener(v -> {
             String nombre = capitalizeInput(nombreInput);
