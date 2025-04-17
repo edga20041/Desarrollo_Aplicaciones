@@ -75,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (validations.validateFields(this, nombre, apellido, dni, phone, email, password, confirmPassword)) {
                 RegisterRequest registerRequest = new RegisterRequest(email, password, nombre, apellido, phone, Integer.parseInt(dni));
-                Log.d(TAG, "registerButton.OnClickListener: Realizando registro con: " + registerRequest.toString()); // Log de la petición
+                Log.d(TAG, "registerButton.OnClickListener: Realizando registro con: " + registerRequest); // Log de la petición
                 registerWithBackend(registerRequest);
             }
         });
