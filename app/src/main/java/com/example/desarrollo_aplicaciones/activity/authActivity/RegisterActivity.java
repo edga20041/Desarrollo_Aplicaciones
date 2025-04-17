@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         configurePasswordVisibility(passwordInput, showPasswordIcon);
         configurePasswordVisibility(confirmPasswordInput, showConfirmPasswordIcon);
 
-        backButton.setOnClickListener(v -> onBackPressed());
+        backButton.setOnClickListener(v -> getOnBackPressedDispatcher()); // onBackPressed() esta deprecado
 
         registerButton.setOnClickListener(v -> {
             String nombre = nombreInput.getText().toString().trim();
