@@ -26,6 +26,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -107,12 +111,12 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (!isValidDni(dni)) {
-            Toast.makeText(this, "DNI inválido. Debe tener exactamente 8 dígitos.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "DNI inválido. Debe tener entre 5 y 8 dígitos.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (!isValidPhoneNumber(phone)) {
-            Toast.makeText(this, "Teléfono inválido. Debe tener exactamente 10 dígitos.", Toast.LENGTH_SHORT).show();
+        if (!isValidPhoneNumber(phone, "AR")) {
+            Toast.makeText(this, "Teléfono inválido para Argentina.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -180,19 +184,27 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isValidName(String name) {
-        return name.matches("^[A-Z][a-zA-Z]*$");
+        return name.matches("^[A-Z][a-zA-Z ]*$");
     }
 
     private boolean isValidSurname(String surname) {
-        return surname.matches("^[A-Z][a-zA-Z]*$");
+        return surname.matches("^[A-Z][a-zA-Z ]*$");
     }
 
     private boolean isValidDni(String dni) {
-        return dni.matches("^\\d{8}$");
+        return dni.matches("^\\d{5,8}$");
     }
 
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        return phoneNumber.matches("^\\d{10}$");
+    private boolean isValidPhoneNumber(String phoneNumber, String region) {
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        try {
+            Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, region);
+            return phoneUtil.isValidNumber(number);
+        } catch (NumberParseException e) {
+            Log.e(TAG, "Fomato de numero de telefono inválido.");
+            return false;
+        }
+        // return phoneNumber.matches("^\\d{10}$");
     }
 
     private boolean isValidEmail(String email) {
@@ -200,7 +212,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[A-Z])(?=.*\\d).{9,}$");
+        return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%&*_+?\\-=]).{8,}$");
     }
 
 }
