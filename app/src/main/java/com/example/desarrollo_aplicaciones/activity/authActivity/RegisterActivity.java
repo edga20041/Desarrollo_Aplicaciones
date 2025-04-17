@@ -30,9 +30,13 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import com.example.desarrollo_aplicaciones.helpers.Validations;
+
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
+
+    private final Validations validations = new Validations(TAG);
 
     @Inject
     ApiService apiService;
@@ -71,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
             String password = passwordInput.getText().toString();
             String confirmPassword = confirmPasswordInput.getText().toString();
 
-            if (validateFields(nombre, apellido, dni, phone, email, password, confirmPassword)) {
+            if (validations.validateFields(this, nombre, apellido, dni, phone, email, password, confirmPassword)) {
                 RegisterRequest registerRequest = new RegisterRequest(email, password, nombre, apellido, phone, Integer.parseInt(dni));
                 Log.d(TAG, "registerButton.OnClickListener: Realizando registro con: " + registerRequest.toString()); // Log de la petición
                 registerWithBackend(registerRequest);
@@ -92,52 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
             passwordField.setSelection(passwordField.getText().length());
         });
     }
-
-    private boolean validateFields(String nombre, String apellido, String dni, String phone, String email, String password, String confirmPassword) {
-        if (nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty() || phone.isEmpty() ||
-                email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidName(nombre)) {
-            Toast.makeText(this, "Nombre inválido. Debe empezar por mayúscula y no tener números.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidSurname(apellido)) {
-            Toast.makeText(this, "Apellido inválido. Debe empezar por mayúscula y no tener números.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidDni(dni)) {
-            Toast.makeText(this, "DNI inválido. Debe tener entre 5 y 8 dígitos.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidPhoneNumber(phone, "AR")) {
-            Toast.makeText(this, "Teléfono inválido para Argentina.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidEmail(email)) {
-            Toast.makeText(this, "Correo electrónico inválido.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidPassword(password)) {
-            Toast.makeText(this, "Contraseña inválida. Debe tener una mayúscula, números y mínimo 9 caracteres.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
 
     private void registerWithBackend(RegisterRequest registerRequest) {
         Call<ResponseBody> call = apiService.register(registerRequest);
@@ -182,37 +140,4 @@ public class RegisterActivity extends AppCompatActivity {
                 ", tokenRepository=" + tokenRepository +
                 '}';
     }
-
-    private boolean isValidName(String name) {
-        return name.matches("^[A-Z][a-zA-Z ]*$");
-    }
-
-    private boolean isValidSurname(String surname) {
-        return surname.matches("^[A-Z][a-zA-Z ]*$");
-    }
-
-    private boolean isValidDni(String dni) {
-        return dni.matches("^\\d{5,8}$");
-    }
-
-    private boolean isValidPhoneNumber(String phoneNumber, String region) {
-        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-        try {
-            Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, region);
-            return phoneUtil.isValidNumber(number);
-        } catch (NumberParseException e) {
-            Log.e(TAG, "Fomato de numero de telefono inválido.");
-            return false;
-        }
-        // return phoneNumber.matches("^\\d{10}$");
-    }
-
-    private boolean isValidEmail(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%&*_+?\\-=]).{8,}$");
-    }
-
 }
