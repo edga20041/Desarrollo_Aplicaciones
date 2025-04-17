@@ -90,4 +90,7 @@ dependencies {
     //Map
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // Phone number validation
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.40'
 }

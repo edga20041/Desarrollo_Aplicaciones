@@ -1,5 +1,7 @@
 package com.example.desarrollo_aplicaciones.activity.authActivity;
 
+import static com.example.desarrollo_aplicaciones.helpers.Formats.*;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,9 +28,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.example.desarrollo_aplicaciones.helpers.Validations;
+
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
+
+    private final Validations validations = new Validations(TAG);
 
     @Inject
     ApiService apiService;
@@ -56,20 +62,20 @@ public class RegisterActivity extends AppCompatActivity {
         configurePasswordVisibility(passwordInput, showPasswordIcon);
         configurePasswordVisibility(confirmPasswordInput, showConfirmPasswordIcon);
 
-        backButton.setOnClickListener(v -> onBackPressed());
+        backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         registerButton.setOnClickListener(v -> {
-            String nombre = nombreInput.getText().toString().trim();
-            String apellido = apellidoInput.getText().toString().trim();
-            String dni = dniInput.getText().toString().trim();
-            String phone = phoneInput.getText().toString().trim();
-            String email = emailInput.getText().toString().trim();
-            String password = passwordInput.getText().toString();
-            String confirmPassword = confirmPasswordInput.getText().toString();
+            String nombre = capitalizeInput(nombreInput);
+            String apellido = capitalizeInput(apellidoInput);
+            String dni = getTextInput(dniInput);
+            String phone = getTextInput(phoneInput);
+            String email = getTextInput(emailInput);
+            String password = getTextInput(passwordInput);
+            String confirmPassword = getTextInput(confirmPasswordInput);
 
-            if (validateFields(nombre, apellido, dni, phone, email, password, confirmPassword)) {
+            if (validations.validateFields(this, nombre, apellido, dni, phone, email, password, confirmPassword)) {
                 RegisterRequest registerRequest = new RegisterRequest(email, password, nombre, apellido, phone, Integer.parseInt(dni));
-                Log.d(TAG, "registerButton.OnClickListener: Realizando registro con: " + registerRequest.toString()); // Log de la petición
+                Log.d(TAG, "registerButton.OnClickListener: Realizando registro con: " + registerRequest); // Log de la petición
                 registerWithBackend(registerRequest);
             }
         });
@@ -88,52 +94,6 @@ public class RegisterActivity extends AppCompatActivity {
             passwordField.setSelection(passwordField.getText().length());
         });
     }
-
-    private boolean validateFields(String nombre, String apellido, String dni, String phone, String email, String password, String confirmPassword) {
-        if (nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty() || phone.isEmpty() ||
-                email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidName(nombre)) {
-            Toast.makeText(this, "Nombre inválido. Debe empezar por mayúscula y no tener números.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidSurname(apellido)) {
-            Toast.makeText(this, "Apellido inválido. Debe empezar por mayúscula y no tener números.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidDni(dni)) {
-            Toast.makeText(this, "DNI inválido. Debe tener exactamente 8 dígitos.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidPhoneNumber(phone)) {
-            Toast.makeText(this, "Teléfono inválido. Debe tener exactamente 10 dígitos.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidEmail(email)) {
-            Toast.makeText(this, "Correo electrónico inválido.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!isValidPassword(password)) {
-            Toast.makeText(this, "Contraseña inválida. Debe tener una mayúscula, números y mínimo 9 caracteres.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
 
     private void registerWithBackend(RegisterRequest registerRequest) {
         Call<ResponseBody> call = apiService.register(registerRequest);
@@ -178,29 +138,4 @@ public class RegisterActivity extends AppCompatActivity {
                 ", tokenRepository=" + tokenRepository +
                 '}';
     }
-
-    private boolean isValidName(String name) {
-        return name.matches("^[A-Z][a-zA-Z]*$");
-    }
-
-    private boolean isValidSurname(String surname) {
-        return surname.matches("^[A-Z][a-zA-Z]*$");
-    }
-
-    private boolean isValidDni(String dni) {
-        return dni.matches("^\\d{8}$");
-    }
-
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        return phoneNumber.matches("^\\d{10}$");
-    }
-
-    private boolean isValidEmail(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[A-Z])(?=.*\\d).{9,}$");
-    }
-
 }
