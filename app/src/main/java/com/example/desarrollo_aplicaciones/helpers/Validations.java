@@ -47,7 +47,7 @@ public class Validations {
         }
 
         if (!isValidPassword(password)) {
-            Toast.makeText(activity, "Contraseña inválida. Debe tener una mayúscula, números y mínimo 9 caracteres.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Contraseña inválida. Debe tener una mayúscula, un número, un caracter especial y mínimo 8 caracteres.", Toast.LENGTH_LONG).show();
             return false;
         }
 
