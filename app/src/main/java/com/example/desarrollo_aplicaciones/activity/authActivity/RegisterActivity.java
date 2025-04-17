@@ -1,5 +1,7 @@
 package com.example.desarrollo_aplicaciones.activity.authActivity;
 
+import static com.example.desarrollo_aplicaciones.helpers.Formats.*;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,10 +27,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 
 import com.example.desarrollo_aplicaciones.helpers.Validations;
 
@@ -67,13 +65,13 @@ public class RegisterActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> getOnBackPressedDispatcher()); // onBackPressed() esta deprecado
 
         registerButton.setOnClickListener(v -> {
-            String nombre = nombreInput.getText().toString().trim();
-            String apellido = apellidoInput.getText().toString().trim();
-            String dni = dniInput.getText().toString().trim();
-            String phone = phoneInput.getText().toString().trim();
-            String email = emailInput.getText().toString().trim();
-            String password = passwordInput.getText().toString();
-            String confirmPassword = confirmPasswordInput.getText().toString();
+            String nombre = capitalizeInput(nombreInput);
+            String apellido = capitalizeInput(apellidoInput);
+            String dni = getTextInput(dniInput);
+            String phone = getTextInput(phoneInput);
+            String email = getTextInput(emailInput);
+            String password = getTextInput(passwordInput);
+            String confirmPassword = getTextInput(confirmPasswordInput);
 
             if (validations.validateFields(this, nombre, apellido, dni, phone, email, password, confirmPassword)) {
                 RegisterRequest registerRequest = new RegisterRequest(email, password, nombre, apellido, phone, Integer.parseInt(dni));
