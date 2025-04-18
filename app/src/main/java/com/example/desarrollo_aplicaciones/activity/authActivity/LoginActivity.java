@@ -13,6 +13,7 @@ import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
 import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
+import com.example.desarrollo_aplicaciones.helpers.Validations;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
@@ -24,6 +25,9 @@ import retrofit2.Response;
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+
+    private final Validations validations = new Validations(TAG);
+
     @Inject
     ApiService apiService;
 
@@ -69,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            if (!isValidEmail(email)) {
+            if (!validations.isValidEmail(email)) {
                 Toast.makeText(this, "Por favor, introduce un email válido", Toast.LENGTH_SHORT).show();
                 return;
             }
