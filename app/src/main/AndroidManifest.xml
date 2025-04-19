@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Desarrollo_Aplicaciones"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -32,6 +33,10 @@
         <activity android:name=".activity.authActivity.RecoverPasswordActivity" android:exported="true"/>
         <activity android:name=".HomeActivity" android:exported="true" />
         <activity android:name=".fragmentHome.DetalleEntregaActivity" android:exported="true" />
-    </application>
+        <activity
+            android:name=".repository.auth.DetalleEntregaHistorialActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Desarrollo_Aplicaciones"
+            android:hardwareAccelerated="false" />    </application>
 
 </manifest>

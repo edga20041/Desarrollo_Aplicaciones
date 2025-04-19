@@ -1,40 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="2dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:background="@android:color/white"
+    android:elevation="2dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textViewCliente"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="Cliente: Nombre del Cliente" />
 
-        <TextView
-            android:id="@+id/textViewCliente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cliente: Juan Pérez"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/textViewProducto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Producto: Descripción del Producto" />
 
-        <TextView
-            android:id="@+id/textViewEstadoFinal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Estado: Finalizada"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/textViewEstadoFinal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estado: Finalizado" />
 
-        <TextView
-            android:id="@+id/textViewFechaFinalizacion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fecha: 2023-10-26"
-            android:textSize="14sp" />
 
-    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>

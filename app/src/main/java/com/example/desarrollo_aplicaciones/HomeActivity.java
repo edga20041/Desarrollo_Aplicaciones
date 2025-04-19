@@ -18,6 +18,7 @@ import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.UserResponse;
 import com.example.desarrollo_aplicaciones.fragmentHome.ListaEntregasFragment;
 //import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
+import com.example.desarrollo_aplicaciones.repository.auth.HistorialEntregasFragment;
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 
 import java.time.LocalTime;
@@ -145,10 +146,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void cargarHistorialEntregasFragment() {
         Log.d("HomeActivity", "cargarHistorialEntregasFragment() llamado");
-        //HistorialEntregasFragment historialFragment = new HistorialEntregasFragment();
+        HistorialEntregasFragment historialFragment = new HistorialEntregasFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //fragmentTransaction.replace(R.id.contenedorHistorial, historialFragment);
+        fragmentTransaction.replace(R.id.contenedorHistorial, historialFragment);
         fragmentTransaction.commit();
         Log.d("HomeActivity", "Fragment de historial cargado.");
     }

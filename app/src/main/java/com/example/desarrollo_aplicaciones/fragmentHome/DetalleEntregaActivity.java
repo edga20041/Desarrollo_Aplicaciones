@@ -1,15 +1,19 @@
 package com.example.desarrollo_aplicaciones.fragmentHome;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.desarrollo_aplicaciones.R;
 import com.example.desarrollo_aplicaciones.api.model.ApiService;
+import com.example.desarrollo_aplicaciones.api.model.CambiarEstadoEntregaRequest;
 import com.example.desarrollo_aplicaciones.entity.Entrega;
 import com.example.desarrollo_aplicaciones.entity.Estado; // Importa la clase Estado
 import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
@@ -40,6 +44,7 @@ public class DetalleEntregaActivity extends AppCompatActivity {
     private Button btnQr;
 
     private Long entregaId;
+    private Long repartidorIdEntrega;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,53 @@ public class DetalleEntregaActivity extends AppCompatActivity {
         btnVolver.setOnClickListener(v -> finish());
 
         btnQr.setOnClickListener(v -> {
-            // Aquí irá la lógica para el QR en el futuro
+            Log.d("DetalleEntregaActivity", "Botón QR presionado.");
+            finalizarEntrega();
+        });
+    }
+
+    private void finalizarEntrega() {
+        String token = tokenRepository.getToken();
+        Long estadoFinalizadoId = 3L;
+
+        CambiarEstadoEntregaRequest request = new CambiarEstadoEntregaRequest();
+        request.setEntregaId(entregaId);
+        request.setEstadoId(estadoFinalizadoId);
+        request.setRepartidorId(repartidorIdEntrega);
+
+        Log.d("FinalizarEntrega", "Valor de repartidorIdEntrega antes de la request: " + repartidorIdEntrega);
+        Call<com.example.desarrollo_aplicaciones.api.model.CambiarEstadoEntregaResponse> call =
+                apiService.cambiarEstadoEntrega(request, "Bearer " + token);
+
+        call.enqueue(new Callback<com.example.desarrollo_aplicaciones.api.model.CambiarEstadoEntregaResponse>() {
+            @Override
+            public void onResponse(Call<com.example.desarrollo_aplicaciones.api.model.CambiarEstadoEntregaResponse> call, Response<com.example.desarrollo_aplicaciones.api.model.CambiarEstadoEntregaResponse> response) {
+                Log.d("FinalizarEntrega", "Respuesta de cambiarEstadoEntrega: Código " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("FinalizarEntrega", "Entrega finalizada exitosamente: " + response.body().getMessage());
+                    Toast.makeText(DetalleEntregaActivity.this, "Entrega finalizada", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent("entrega_finalizada");
+                    LocalBroadcastManager.getInstance(DetalleEntregaActivity.this).sendBroadcast(intent);
+
+                    finish();
+                } else {
+                    Log.e("FinalizarEntrega", "Error al finalizar la entrega. Código: " + response.code());
+                    if (response.errorBody() != null) {
+                        try {
+                            Log.e("FinalizarEntrega", "Error del backend: " + response.errorBody().string());
+                        } catch (Exception e) {
+                            Log.e("FinalizarEntrega", "Error al leer el error body", e);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.example.desarrollo_aplicaciones.api.model.CambiarEstadoEntregaResponse> call, Throwable t) {
+                Log.e("FinalizarEntrega", "Error de conexión al finalizar: " + t.getMessage()); // Log de error de conexión
+                Toast.makeText(DetalleEntregaActivity.this, "Error de conexión al finalizar", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -80,9 +131,10 @@ public class DetalleEntregaActivity extends AppCompatActivity {
             public void onResponse(Call<Entrega> call, Response<Entrega> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Entrega entrega = response.body();
-                    // Ahora obtenemos el nombre del estado
+                    Log.d("DetalleEntregaActivity", "Repartidor ID recibido del backend: " + entrega.getRepartidorId());
+                    repartidorIdEntrega = entrega.getRepartidorId();
                     cargarNombreEstado(entrega.getEstadoId());
-                    mostrarDetalleEntregaBasico(entrega); // Mostrar la información básica primero
+                    mostrarDetalleEntregaBasico(entrega);
                 } else {
                     Toast.makeText(DetalleEntregaActivity.this, "Error al cargar detalle de entrega", Toast.LENGTH_SHORT).show();
                 }
@@ -121,7 +173,6 @@ public class DetalleEntregaActivity extends AppCompatActivity {
         textClienteDni.setText(String.valueOf(entrega.getClienteDni()));
         textProducto.setText(entrega.getProducto());
         textRutaId.setText(String.valueOf(entrega.getRutaId()));
-        // No seteamos el estado aquí, lo hacemos en cargarNombreEstado()
         textFechaCreacion.setText(entrega.getFechaCreacion());
         textFechaAsignacion.setText(entrega.getFechaAsignacion());
     }

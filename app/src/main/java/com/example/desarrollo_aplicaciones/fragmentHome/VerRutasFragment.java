@@ -28,9 +28,8 @@ public class VerRutasFragment extends Fragment implements OnMapReadyCallback {
     private TextView textViewDestino;
     private TextView textViewContenido;
 
-    // Datos de la entrega (simulados por ahora)
-    private LatLng origen = new LatLng(-34.6037, -58.3816); // Ejemplo: Obelisco, Buenos Aires
-    private LatLng destino = new LatLng(-34.6179, -58.3715); // Ejemplo: Plaza de Mayo, Buenos Aires
+    private LatLng origen = new LatLng(-34.6037, -58.3816);
+    private LatLng destino = new LatLng(-34.6179, -58.3715);
     private String direccionOrigen = "Obelisco, Buenos Aires";
     private String direccionDestino = "Plaza de Mayo, Buenos Aires";
     private String contenidoEntrega = "Documentos importantes";
@@ -62,7 +61,6 @@ public class VerRutasFragment extends Fragment implements OnMapReadyCallback {
             mMap.addMarker(new MarkerOptions().position(origen).title("Origen: " + direccionOrigen));
             mMap.addMarker(new MarkerOptions().position(destino).title("Destino: " + direccionDestino));
 
-            // Por ahora, una simple línea recta
             mMap.addPolyline(new PolylineOptions()
                     .add(origen)
                     .add(destino)

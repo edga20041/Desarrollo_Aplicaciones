@@ -13,6 +13,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import okhttp3.ResponseBody;
@@ -36,12 +37,16 @@ public interface ApiService {
     Call<List<Entrega>> getEntregasPendientes(@Header("Authorization") String token);
     @GET("/entregas/{entrega_id}")
     Call<Entrega> getEntregaById(@Path("entrega_id") Long id, @Header("Authorization") String token);
+
     @GET("/estados/{estado_id}")
     Call<Estado> getEstado(@Path("estado_id") Long id, @Header("Authorization") String token);
 
+    @GET("/estados/{id}")
+    Call<Estado> obtenerEstadoPorId(@Path("id") Long estadoId, @Header("Authorization") String token); // ¡Añade el Header aquí!
 
-    @GET("/repartidores/historial")
-    Call<List<EntregaResponse>> getHistorialEntregas(@Header("Authorization") String authorization);
+
+    @GET("/entregas/historial")
+    Call<List<Entrega>> getHistorialEntregas(@Header("Authorization") String authorization);
 
     @GET("/rutas/pendientes")
     Call<List<Ruta>> getRutasPendientes(@Header("Authorization") String authorization);
@@ -67,4 +72,12 @@ public interface ApiService {
             @Header("Authorization") String authorization,
             @Path("rutaAsignadaId") Long rutaAsignadaId
     );
+    @PATCH("/entregas/cambiar_estado")
+    Call<CambiarEstadoEntregaResponse> cambiarEstadoEntrega(
+            @Body CambiarEstadoEntregaRequest request,
+            @Header("Authorization") String token
+    );
+    @GET("/rutas/{ruta_id}")
+    Call<Ruta> getRutaById(@Path("ruta_id") Long id, @Header("Authorization") String token);
+
 }
