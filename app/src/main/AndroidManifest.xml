@@ -31,6 +31,7 @@
         <activity android:name=".activity.authActivity.VerifyCodeActivity" android:exported ="true" />
         <activity android:name=".activity.authActivity.RecoverPasswordActivity" android:exported="true"/>
         <activity android:name=".HomeActivity" android:exported="true" />
+        <activity android:name=".fragmentHome.DetalleEntregaActivity" android:exported="true" />
     </application>
 
 </manifest>

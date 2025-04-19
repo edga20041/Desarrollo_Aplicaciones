@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.repository.auth;
+/*package com.example.desarrollo_aplicaciones.repository.auth;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -137,4 +137,4 @@ public class HistorialEntregasFragment extends Fragment {
             Toast.makeText(getContext(), "No se pudo autenticar", Toast.LENGTH_SHORT).show();
         }
     }
-}
+}*/

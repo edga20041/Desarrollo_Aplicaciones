@@ -1,6 +1,7 @@
 package com.example.desarrollo_aplicaciones.api.model;
 
 import com.example.desarrollo_aplicaciones.entity.Entrega;
+import com.example.desarrollo_aplicaciones.entity.Estado;
 import com.example.desarrollo_aplicaciones.entity.User;
 import com.example.desarrollo_aplicaciones.entity.Ruta;
 
@@ -27,11 +28,18 @@ public interface ApiService {
     Call<User> getUserById(@Path("userId") int userId);
     @POST("/auth/recover")
     Call<Void> recoverPassword(@Body RecoverPasswordRequest request);
-
     @POST("/auth/verify")
     Call<AuthResponse> verify(@Body VerifyRequest request);
     @POST("/auth/resend-code")
     Call<ResponseBody> resendCode(@Body ResendCodeRequest request);
+    @GET("entregas/pendientes")
+    Call<List<Entrega>> getEntregasPendientes(@Header("Authorization") String token);
+    @GET("/entregas/{entrega_id}")
+    Call<Entrega> getEntregaById(@Path("entrega_id") Long id, @Header("Authorization") String token);
+    @GET("/estados/{estado_id}")
+    Call<Estado> getEstado(@Path("estado_id") Long id, @Header("Authorization") String token);
+
+
     @GET("/repartidores/historial")
     Call<List<EntregaResponse>> getHistorialEntregas(@Header("Authorization") String authorization);
 

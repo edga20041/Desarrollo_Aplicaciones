@@ -1,4 +1,4 @@
-package com.example.desarrollo_aplicaciones.repository.auth;
+/*package com.example.desarrollo_aplicaciones.repository.auth;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,4 +81,4 @@ public class HistorialEntregaAdapter extends RecyclerView.Adapter<HistorialEntre
             textViewFechaFinalizacion = itemView.findViewById(R.id.textViewFechaFinalizacion);
         }
     }
-}
+}*/
