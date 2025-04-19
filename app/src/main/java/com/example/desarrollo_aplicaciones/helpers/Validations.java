@@ -82,7 +82,7 @@ public class Validations {
         }
     }
 
-    private boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 

@@ -111,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
                         intent.putExtra("email", registerRequest.getEmail());
                         startActivity(intent);
+                        finish();
                     } catch (IOException e) {
                         Log.e(TAG, "Error al leer la respuesta del servidor", e);
                     }
