@@ -46,8 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Confirmar Cuenta"
-        android:backgroundTint="#FF9800"
-        android:textColor="#2F2F2F"
+        android:textColor="#ffffff"
         android:padding="15dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="5dp"/>
@@ -57,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#EF6C00"
+
         android:padding="15dp"
         android:text="Reenviar Código"
         android:textColor="#ffffff" />

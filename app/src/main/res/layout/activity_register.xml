@@ -137,17 +137,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:backgroundTint="#FF9800"
         android:padding="12dp"
         android:text="Registrar"
-        android:textColor="#2f2f2f" />
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#EF6C00"
         android:text="Volver atrás"
         android:textColor="#ffffff" />
 

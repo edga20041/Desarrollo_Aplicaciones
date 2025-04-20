@@ -35,7 +35,6 @@
         android:layout_height="wrap_content"
         android:text="Registrar"
         android:textColor="@color/white"
-        android:backgroundTint="@color/material_dynamic_primary0"
         android:padding="12dp"
         android:layout_marginBottom="16dp"/>
 
@@ -46,7 +45,6 @@
         android:layout_height="wrap_content"
         android:text="Iniciar sesión"
         android:textColor="@color/white"
-        android:backgroundTint="@color/material_dynamic_primary0"
         android:padding="12dp"
         android:layout_marginBottom="24dp"/>
 
