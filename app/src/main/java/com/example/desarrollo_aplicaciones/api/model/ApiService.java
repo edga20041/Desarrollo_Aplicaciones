@@ -6,6 +6,7 @@ import com.example.desarrollo_aplicaciones.entity.User;
 import com.example.desarrollo_aplicaciones.entity.Ruta;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -27,8 +28,7 @@ public interface ApiService {
     Call<UserResponse> getUserInfo(@Header("Authorization") String authorization);
     @GET("/auth/users/{userId}")
     Call<User> getUserById(@Path("userId") int userId);
-    @POST("/auth/recover")
-    Call<Void> recoverPassword(@Body RecoverPasswordRequest request);
+
     @POST("/auth/verify")
     Call<AuthResponse> verify(@Body VerifyRequest request);
     @POST("/auth/resend-code")
@@ -80,4 +80,18 @@ public interface ApiService {
     @GET("/rutas/{ruta_id}")
     Call<Ruta> getRutaById(@Path("ruta_id") Long id, @Header("Authorization") String token);
 
+    @POST("/auth/recover")
+    Call<Void> recoverPassword(@Body RecoverPasswordRequest request);
+
+    @POST("/auth/validate-recovery-code")
+    Call<Map<String, Object>> validateRecoveryCode(@Body Map<String, String> body);
+
+    @POST("/auth/reset-password")
+    Call<Map<String, String>> resetPassword(@Body PasswordResetRequest request);
+
+    @POST("/auth/resend-code")
+    Call<Map<String, String>> resendVerificationCode(@Body Map<String, String> body);
+
+    @POST("/auth/resend-recovery-code")
+    Call<Map<String, String>> resendRecoveryCodePassword(@Body Map<String, String> body);
 }

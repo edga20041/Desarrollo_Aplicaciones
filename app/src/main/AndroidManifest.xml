@@ -30,6 +30,9 @@
         <activity android:name=".activity.authActivity.LoginActivity" android:exported="true" />
         <activity android:name=".activity.authActivity.RegisterActivity" android:exported="true" />
         <activity android:name=".activity.authActivity.VerifyCodeActivity" android:exported ="true" />
+        <activity android:name=".activity.authActivity.VerifyCodePasswordActivity" android:exported ="true" />
+        <activity android:name=".activity.authActivity.ResetPasswordActivity" android:exported ="true" />
+
         <activity android:name=".activity.authActivity.RecoverPasswordActivity" android:exported="true"/>
         <activity android:name=".HomeActivity" android:exported="true" />
         <activity android:name=".fragmentHome.DetalleEntregaActivity" android:exported="true" />
@@ -38,5 +41,6 @@
             android:exported="true"
             android:theme="@style/Theme.Desarrollo_Aplicaciones"
             android:hardwareAccelerated="false" />    </application>
+
 
 </manifest>

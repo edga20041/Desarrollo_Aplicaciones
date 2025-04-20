@@ -55,7 +55,11 @@ public class RecoverPasswordActivity extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(RecoverPasswordActivity.this, "Correo de recuperación enviado.", Toast.LENGTH_SHORT).show();
-                        finish();
+                        // Iniciar VerifyCodeActivity
+                        Intent intent = new Intent(RecoverPasswordActivity.this, VerifyCodePasswordActivity.class);
+                        intent.putExtra("email", email); // Pasar el email
+                        startActivity(intent);
+                        finish(); // Cerrar esta Activity después de iniciar la siguiente
                     } else {
                         Toast.makeText(RecoverPasswordActivity.this, "No se pudo enviar el correo. Verifica el email.", Toast.LENGTH_SHORT).show();
                     }
@@ -75,6 +79,7 @@ public class RecoverPasswordActivity extends AppCompatActivity {
             finish();
         });
     }
+
 
     @Override
     protected void onStart() {
