@@ -55,12 +55,9 @@ public class RegisterActivity extends AppCompatActivity {
         EditText passwordInput = findViewById(R.id.passwordInput);
         EditText confirmPasswordInput = findViewById(R.id.confirmPasswordInput);
         Button registerButton = findViewById(R.id.registerUserButton);
-        ImageView showPasswordIcon = findViewById(R.id.showPasswordIcon);
-        ImageView showConfirmPasswordIcon = findViewById(R.id.showConfirmPasswordIcon);
         Button backButton = findViewById(R.id.backButton);
 
-        configurePasswordVisibility(passwordInput, showPasswordIcon);
-        configurePasswordVisibility(confirmPasswordInput, showConfirmPasswordIcon);
+
 
         backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -81,19 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void configurePasswordVisibility(EditText passwordField, ImageView toggleIcon) {
-        passwordField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        toggleIcon.setOnClickListener(v -> {
-            if (passwordField.getInputType() == (android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-                passwordField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                toggleIcon.setImageResource(R.drawable.ic_eye);
-            } else {
-                passwordField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                toggleIcon.setImageResource(R.drawable.ic_eye_off);
-            }
-            passwordField.setSelection(passwordField.getText().length());
-        });
-    }
+
 
     private void registerWithBackend(RegisterRequest registerRequest) {
         Call<ResponseBody> call = apiService.register(registerRequest);
