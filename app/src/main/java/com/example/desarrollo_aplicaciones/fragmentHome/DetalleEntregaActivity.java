@@ -57,7 +57,6 @@ public class DetalleEntregaActivity extends AppCompatActivity {
         textRutaId = findViewById(R.id.textRutaId);
         textEstadoId = findViewById(R.id.textEstadoId);
         textFechaCreacion = findViewById(R.id.textFechaCreacion);
-        textFechaAsignacion = findViewById(R.id.textFechaAsignacion);
         btnVolver = findViewById(R.id.btnVolver);
         btnQr = findViewById(R.id.btnQr);
 
@@ -174,6 +173,5 @@ public class DetalleEntregaActivity extends AppCompatActivity {
         textProducto.setText(entrega.getProducto());
         textRutaId.setText(String.valueOf(entrega.getRutaId()));
         textFechaCreacion.setText(entrega.getFechaCreacion());
-        textFechaAsignacion.setText(entrega.getFechaAsignacion());
     }
 }

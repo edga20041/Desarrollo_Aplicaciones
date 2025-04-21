@@ -134,26 +134,6 @@
             android:text="" />
     </LinearLayout>
 
-    <!-- Fecha Asignación -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fecha Asignación:"
-            android:textStyle="bold"
-            android:layout_marginEnd="8dp" />
-        <TextView
-            android:id="@+id/textFechaAsignacion"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="" />
-    </LinearLayout>
-
     <!-- Botones: Volver y QR -->
     <LinearLayout
         android:layout_width="match_parent"

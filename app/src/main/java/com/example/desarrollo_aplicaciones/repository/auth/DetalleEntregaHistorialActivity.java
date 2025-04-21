@@ -180,7 +180,7 @@ public class DetalleEntregaHistorialActivity extends AppCompatActivity implement
         textProductoHistorial.setText("Producto: " + entrega.getProducto());
         textRutaIdHistorial.setText("Ruta ID: " + String.valueOf(entrega.getRutaId()));
         textFechaCreacionHistorial.setText("Fecha Creación: " + entrega.getFechaCreacion());
-        textFechaAsignacionHistorial.setText("Fecha Asignación: " + entrega.getFechaAsignacion());
+        textFechaAsignacionHistorial.setText("Fecha Finalizacion: " + entrega.getFechaFinalizacion());
     }
 
     @Override
