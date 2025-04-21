@@ -1,161 +1,165 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".HomeActivity"
     android:background="?android:attr/windowBackground">
 
-    <!-- Sección de saludo -->
+    <!-- Contenedor principal de tu contenido -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
-
-        <ImageView
-            android:id="@+id/userImageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/img"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="Avatar del usuario" />
-
-        <TextView
-            android:id="@+id/welcomeTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"
-            tools:text="¡Buenos días Usuario!" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/logoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cerrar Sesión"
-            android:textColor="?android:attr/textColorPrimaryInverse"
-            app:iconGravity="textStart"
-            android:layout_marginStart="8dp" />
-
-    </LinearLayout>
-
-    <!-- Sección de botones de acciones -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_ver_historial"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Ver Historial"
-            android:layout_marginEnd="8dp"
-            app:iconGravity="textStart" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_ver_rutas"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Ver Entregas"
-            android:layout_marginStart="8dp"
-            app:iconGravity="textStart" />
-
-    </LinearLayout>
-
-    <!-- Sección de Ruta Asignada -->
-    <LinearLayout
-        android:id="@+id/layoutRutaAsignada"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="gone">
+        android:layout_above="@id/bottomToolbar">
 
-        <TextView
+        <!-- Sección de saludo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:id="@+id/userImageView"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/img"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Avatar del usuario" />
+
+            <TextView
+                android:id="@+id/welcomeTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"
+                tools:text="¡Buenos días Usuario!" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cerrar Sesión"
+                android:textColor="?android:attr/textColorPrimaryInverse"
+                app:iconGravity="textStart"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Sección de botones de acciones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_ver_historial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ver Historial"
+                android:layout_marginEnd="8dp"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_ver_rutas"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ver Entregas"
+                android:layout_marginStart="8dp"
+                app:iconGravity="textStart" />
+        </LinearLayout>
+
+        <!-- Sección de Ruta Asignada -->
+        <LinearLayout
+            android:id="@+id/layoutRutaAsignada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ruta Asignada"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:textColor="?android:attr/textColorPrimary" />
+
+            <TextView
+                android:id="@+id/textViewRutaAsignadaOrigenTexto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Origen:"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+            <TextView
+                android:id="@+id/textViewRutaAsignadaOrigen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="?android:attr/textColorSecondary"/>
+
+            <TextView
+                android:id="@+id/textViewRutaAsignadaDestinoTexto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destino:"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"/>
+
+            <TextView
+                android:id="@+id/textViewRutaAsignadaDestino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:textColor="?android:attr/textColorSecondary"/>
+        </LinearLayout>
+
+        <!-- Botón Finalizar Ruta -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFinalizarRuta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ruta Asignada"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:text="Finalizar Ruta"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:textColor="?android:attr/textColorPrimaryInverse"/>
 
-        <TextView
-            android:id="@+id/textViewRutaAsignadaOrigenTexto"
-            android:layout_width="wrap_content"
+        <!-- Contenedor para los fragmentos -->
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp" />
+
+        <FrameLayout
+            android:id="@+id/contenedorHistorial"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Origen:"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"/>
-
-        <TextView
-            android:id="@+id/textViewRutaAsignadaOrigen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textColor="?android:attr/textColorSecondary"/>
-
-        <TextView
-            android:id="@+id/textViewRutaAsignadaDestinoTexto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Destino:"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"/>
-
-        <TextView
-            android:id="@+id/textViewRutaAsignadaDestino"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textColor="?android:attr/textColorSecondary"/>
-
+            android:visibility="gone"
+            android:layout_marginTop="16dp" />
     </LinearLayout>
 
-    <!-- Botón Finalizar Ruta -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnFinalizarRuta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finalizar Ruta"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        android:textColor="?android:attr/textColorPrimaryInverse"/>
-
-    <!-- Contenedor para los fragmentos -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp" />
-
-    <FrameLayout
-        android:id="@+id/contenedorHistorial"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp" />
-
+    <!-- Toolbar fija en la parte inferior -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bottomToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:gravity="center"/>
-
-</LinearLayout>
+        android:gravity="center" />
+</RelativeLayout>
