@@ -1,16 +1,21 @@
 package com.example.desarrollo_aplicaciones;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -79,6 +84,8 @@ public class HomeActivity extends AppCompatActivity {
             layoutEntregaActual.setVisibility(View.GONE);
             btnFinalizarRuta.setVisibility(View.GONE);
             fragmentContainer.setVisibility(View.GONE);
+            Toolbar bottomToolbar = findViewById(R.id.bottomToolbar);
+
 
             ZoneId zonaHoraria = ZoneId.of("America/Argentina/Buenos_Aires");
             LocalTime horaActual = LocalTime.now(zonaHoraria);
@@ -138,6 +145,22 @@ public class HomeActivity extends AppCompatActivity {
                 // finalizarEntregaEnBackend(idEntregaActual);
             });
 
+            setSupportActionBar(bottomToolbar);
+            getSupportActionBar().setTitle("");
+            bottomToolbar.setOnClickListener(v -> {
+                int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); // Cambia a modo claro
+                    Toast.makeText(this, "Cambiado a modo claro", Toast.LENGTH_SHORT).show();
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Cambia a modo oscuro
+                    Toast.makeText(this, "Cambiado a modo oscuro", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
+
         } catch (Exception e) {
             Log.e("HomeActivity", "¡ERROR FATAL EN onCreate()!: " + e.getMessage(), e);
             finish();
@@ -192,6 +215,27 @@ public class HomeActivity extends AppCompatActivity {
                 welcomeTextView.setText(saludo + " Usuario");
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_toggle_theme) { // Verifica si el ítem seleccionado es "Cambiar Tema"
+            int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); // Cambiar a modo claro
+                Toast.makeText(this, "Cambiado a modo claro", Toast.LENGTH_SHORT).show();
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Cambiar a modo oscuro
+                Toast.makeText(this, "Cambiado a modo oscuro", Toast.LENGTH_SHORT).show();
+            }
+            return true; // Indica que el evento fue manejado
+        }
+        return super.onOptionsItemSelected(item); // Para manejar otros ítems en el futuro
     }
 }
 

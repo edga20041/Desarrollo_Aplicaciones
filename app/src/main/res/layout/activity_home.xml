@@ -149,4 +149,13 @@
         android:visibility="gone"
         android:layout_marginTop="16dp" />
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/bottomToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:gravity="center"/>
+
 </LinearLayout>
