@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Título -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,6 +14,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
+    <!-- Cliente -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- DNI -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,6 +54,7 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- Producto -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +74,7 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- Ruta ID -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,6 +94,7 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- Estado ID -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -108,6 +114,7 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- Fecha Creación -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,6 +134,7 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- Fecha Asignación -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -146,23 +154,26 @@
             android:text="" />
     </LinearLayout>
 
+    <!-- Botones: Volver y QR -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnVolver"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Volver"
-            android:layout_marginEnd="8dp"/>
-        <Button
+            android:layout_marginEnd="8dp"
+             />
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnQr"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="QR" />
+            android:text="QR"
+            />
     </LinearLayout>
 
 </LinearLayout>

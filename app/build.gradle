@@ -93,4 +93,7 @@ dependencies {
 
     // Phone number validation
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.13.40'
+
+    //Material Design
+    implementation('com.google.android.material:material:1.11.0')
 }

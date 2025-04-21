@@ -1,75 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="40dp"
-    android:background="#ffffff">
+    android:padding="32dp"
+    android:background="?android:attr/windowBackground">
 
+    <!-- Título -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Iniciar sesión"
-        android:textSize="40sp"
+        android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="#2f2f2f"
+        android:textColor="?android:attr/textColorPrimary"
         android:gravity="center"
-        android:paddingBottom="5dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="32dp" />
 
-    <EditText
-        android:id="@+id/emailInput"
+    <!-- Correo -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
-        android:inputType="textEmailAddress"
-        android:textColor="#2f2f2f"
-        android:textColorHint="#979797"
-        android:background="@drawable/input_background"
-        android:padding="15dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="16dp"
+        app:boxStrokeColor="?attr/colorPrimary">
 
-    <EditText
-        android:id="@+id/passwordInput"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Contraseña -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:textColor="#2f2f2f"
-        android:textColorHint="#979797"
-        android:background="@drawable/input_background"
-        android:padding="15dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        app:endIconMode="password_toggle"
+        app:boxStrokeColor="?attr/colorPrimary">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Link recuperar contraseña -->
     <TextView
         android:id="@+id/recoverPasswordLink"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="-10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:text="¿Olvidaste tu contraseña?"
-        android:textColor="#8A2BE2" />
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true" />
 
-    <Button
+    <!-- Botón iniciar sesión -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/loginUserButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="5dp"
-        android:textColor="@color/white"
-        android:padding="15dp"
         android:text="Iniciar sesión"
-        />
+        android:layout_marginBottom="24dp" />
 
+    <!-- Registro -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -77,18 +80,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="¿Aún no tienes cuenta? "
-            android:textColor="#2f2f2f" />
+            android:textColor="?android:attr/textColorPrimary" />
 
         <TextView
             android:id="@+id/registerLink"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
             android:text="Regístrate"
-            android:textColor="#8A2BE2"
-            android:textStyle="bold" />
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
 </LinearLayout>

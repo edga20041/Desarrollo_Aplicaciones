@@ -1,105 +1,120 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:id="@+id/scrollViewDetalleEntregaHistorial"> <LinearLayout
-    android:id="@+id/linearLayoutContenedor"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="@color/md_theme_background"
+    android:id="@+id/scrollViewDetalleEntregaHistorial">
 
-        <TextView
-            android:id="@+id/textClienteHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:text="Cliente: " />
-
-        <TextView
-            android:id="@+id/textClienteDniHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="DNI: " />
-
-        <TextView
-            android:id="@+id/textProductoHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Producto: " />
-
-        <TextView
-            android:id="@+id/textRutaIdHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ruta ID: " />
-
-        <TextView
-            android:id="@+id/textEstadoIdHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Estado: " />
-
-        <TextView
-            android:id="@+id/textFechaCreacionHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fecha Creación: " />
-
-        <TextView
-            android:id="@+id/textFechaAsignacionHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fecha Asignación: " />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:text="Ubicación de la Entrega:" />
-
-        <View
-            android:id="@+id/mapPlaceholder"
+        <LinearLayout
+            android:id="@+id/linearLayoutContenedor"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/white" />
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapViewDetalleHistorial"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="8dp"
-            android:background="@android:color/white"
-            android:visibility="gone" />
-
-
-        <TextView
-            android:id="@+id/textViewOrigenHistorial"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Origen: " />
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/md_theme_surface">
 
-        <TextView
-            android:id="@+id/textViewDestinoHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Destino: " />
+                <TextView
+                    android:id="@+id/textClienteHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:text="Cliente: "
+                    android:textColor="@color/md_theme_onBackground"/>
 
-        <Button
-            android:id="@+id/btnVolverHistorial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Volver" />
+                <TextView
+                    android:id="@+id/textClienteDniHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DNI: "
+                    android:textColor="@color/md_theme_onBackground"/>
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/textProductoHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Producto: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <TextView
+                    android:id="@+id/textRutaIdHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ruta ID: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <TextView
+                    android:id="@+id/textEstadoIdHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estado: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <TextView
+                    android:id="@+id/textFechaCreacionHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha Creación: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <TextView
+                    android:id="@+id/textFechaAsignacionHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha Asignación: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:text="Ubicación de la Entrega:"
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <View
+                    android:id="@+id/mapPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/md_theme_surface"/>
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapViewDetalleHistorial"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/md_theme_surface"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/textViewOrigenHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Origen: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <TextView
+                    android:id="@+id/textViewDestinoHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Destino: "
+                    android:textColor="@color/md_theme_onBackground"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnVolverHistorial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Volver"
+                    android:textColor="@color/md_theme_onPrimary"
+                    android:backgroundTint="@color/md_theme_primary"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
+        </LinearLayout>
 </ScrollView>
