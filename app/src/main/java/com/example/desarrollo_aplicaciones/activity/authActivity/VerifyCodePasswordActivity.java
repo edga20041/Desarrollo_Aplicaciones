@@ -87,10 +87,12 @@ public class VerifyCodePasswordActivity extends AppCompatActivity {
         });
 
         resendCodeTextView.setOnClickListener(v -> {
+            Toast.makeText(VerifyCodePasswordActivity.this, "Enviando codigo nuevo a tu correo...", Toast.LENGTH_LONG).show();
+
             Map<String, String> requestBody = new HashMap<>();
             requestBody.put("email", email);
 
-            apiService.resendRecoveryCodePassword(requestBody).enqueue(new Callback<Map<String, String>>() { // Asegúrate de tener este método en tu ApiService
+            apiService.resendRecoveryCodePassword(requestBody).enqueue(new Callback<Map<String, String>>() {
                 @Override
                 public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                     if (response.isSuccessful() && response.body() != null && response.body().containsKey("message")) {

@@ -48,13 +48,16 @@ public class RecoverPasswordActivity extends AppCompatActivity {
                 return;
             }
 
+            Toast.makeText(RecoverPasswordActivity.this, "Enviando codigo de verificacion a tu correo...", Toast.LENGTH_LONG).show(); // Mostrar mensaje
+
+
             RecoverPasswordRequest request = new RecoverPasswordRequest(email);
 
             apiService.recoverPassword(request).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(RecoverPasswordActivity.this, "Correo de recuperación enviado.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RecoverPasswordActivity.this, "Correo enviado con un codigo de verificacion.", Toast.LENGTH_SHORT).show();
                         // Iniciar VerifyCodeActivity
                         Intent intent = new Intent(RecoverPasswordActivity.this, VerifyCodePasswordActivity.class);
                         intent.putExtra("email", email); // Pasar el email

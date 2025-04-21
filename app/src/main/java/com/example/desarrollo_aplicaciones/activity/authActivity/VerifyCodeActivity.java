@@ -104,6 +104,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
             Toast.makeText(this, "No se encontró el email del usuario", Toast.LENGTH_SHORT).show();
             return;
         }
+        Toast.makeText(VerifyCodeActivity.this, "Reenviando codigo, aguarde un instante...", Toast.LENGTH_LONG).show();
 
         ResendCodeRequest request = new ResendCodeRequest(email);
         Call<ResponseBody> call = apiService.resendCode(request);
