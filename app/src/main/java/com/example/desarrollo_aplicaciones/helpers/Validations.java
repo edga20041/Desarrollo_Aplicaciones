@@ -86,7 +86,6 @@ public class Validations {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%&*._+?\\-=]).{8,}$");
+    private boolean isValidPassword(String password) {return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%&*._+?\\-=]).{8,}$");
     }
 }
