@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="32dp"
+    android:padding="24dp"
     android:background="?android:attr/windowBackground">
 
     <!-- Título principal -->
@@ -13,17 +13,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¡Crea tu cuenta!"
-        android:textSize="32sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="?android:attr/textColorPrimary"
         android:gravity="center"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="24dp" />
 
     <!-- Campo Nombre -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -31,6 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nombre"
+            android:textSize="16sp"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -38,7 +39,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -46,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Apellido"
+            android:textSize="16sp"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,7 +55,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -61,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="DNI"
+            android:textSize="16sp"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,7 +71,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -76,6 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Teléfono"
+            android:textSize="16sp"
             android:inputType="phone" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,7 +87,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         app:boxStrokeColor="?attr/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -91,6 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Correo electrónico"
+            android:textSize="16sp"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,7 +103,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         app:endIconMode="password_toggle"
         app:boxStrokeColor="?attr/colorPrimary">
 
@@ -107,6 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Contraseña"
+            android:textSize="16sp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,7 +120,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="20dp"
         app:endIconMode="password_toggle"
         app:boxStrokeColor="?attr/colorPrimary">
 
@@ -123,6 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Confirmar Contraseña"
+            android:textSize="16sp"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,7 +139,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Registrar"
-        android:layout_marginBottom="16dp" />
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
 
     <!-- Botón Volver -->
     <com.google.android.material.button.MaterialButton
@@ -140,5 +148,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Volver atrás"
-         />
+        android:textSize="14sp" />
 </LinearLayout>
