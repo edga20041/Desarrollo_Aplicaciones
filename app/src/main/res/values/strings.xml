@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Desarrollo_Aplicaciones</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_history">Historial</string>
+    <string name="title_new_orders">Nuevos Pedidos</string>
+    <string name="title_logout">Salir</string>
 </resources>
