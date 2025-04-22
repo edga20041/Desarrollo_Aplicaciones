@@ -10,10 +10,11 @@ import com.example.desarrollo_aplicaciones.activity.authActivity.LoginActivity;
 import com.example.desarrollo_aplicaciones.activity.authActivity.RegisterActivity;
 import com.example.desarrollo_aplicaciones.api.model.ApiService;
 
+import dagger.hilt.android.AndroidEntryPoint;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
 

@@ -2,42 +2,51 @@ package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
-import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
 import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
-import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
+import com.example.desarrollo_aplicaciones.api.model.LoginRequest;
+import com.example.desarrollo_aplicaciones.helpers.Validations;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
 import com.example.desarrollo_aplicaciones.HomeActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LoginActivity";
+
+    private final Validations validations = new Validations(TAG);
 
     @Inject
-    AuthRetrofitRepository authRetrofitRepository;
+    ApiService apiService;
+
+    @Inject
+    TokenRepository tokenRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d(TAG, "onCreate: La Activity ha sido creada.");
 
-        // Añadir al inicio del método onCreate (después de setContentView)
-        SharedPreferences preferences = getSharedPreferences("auth_prefs", MODE_PRIVATE);
-        String savedToken = preferences.getString("auth_token", null);
+        String savedToken = tokenRepository.getToken();
+        Log.d(TAG, "Token recuperado al inicio: " + savedToken);
         if (savedToken != null) {
-            // El usuario ya tiene un token guardado, ir directamente a HomeActivity
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish(); // Agrega esta línea para cerrar LoginActivity
+            finish();
             return;
         }
 
@@ -64,47 +73,89 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (!validations.isValidEmail(email)) {
                 Toast.makeText(this, "Por favor, introduce un email válido", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             LoginRequest loginRequest = new LoginRequest(email, password);
 
-            // Añadir antes de authRetrofitRepository.login
             ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setMessage("Iniciando sesión...");
             progressDialog.show();
 
-            authRetrofitRepository.login(loginRequest, new AuthServiceCallback<AuthResponse>() {
+            Call<AuthResponse> call = apiService.login(loginRequest);
+            call.enqueue(new Callback<AuthResponse>() {
                 @Override
-                public void onSuccess(AuthResponse result) {
-                    // Implementar en el método onSuccess
-                    if (result != null && result.getToken() != null) {
-                        // Guardar token en SharedPreferences
-                        SharedPreferences preferences = getSharedPreferences("auth_prefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("auth_token", result.getToken());
-                        editor.apply();
-                    }
-
-                    Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-
-                    Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                    homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(homeIntent);
-
-                    // No es necesario llamar a finish() cuando usas esas flags
+                public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
                     progressDialog.dismiss();
+                    if (response.isSuccessful()) {
+                        AuthResponse authResponse = response.body();
+                        if (authResponse != null && authResponse.getToken() != null) {
+                            tokenRepository.saveToken(authResponse.getToken());
+                            Log.d(TAG, "Token guardado: " + authResponse.getToken());
+                            Toast.makeText(LoginActivity.this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+                            Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(homeIntent);
+                            finish();
+                        } else {
+                            Log.e(TAG, "Error: Respuesta de inicio de sesión nula o sin token.");
+                            Toast.makeText(LoginActivity.this, "Error al iniciar sesión. Inténtalo de nuevo.", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Log.e(TAG, "Error en la respuesta de inicio de sesión. Código: " + response.code());
+                        Toast.makeText(LoginActivity.this, "Error al iniciar sesión. Credenciales incorrectas.", Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
-                public void onError(Throwable error) {
-                    // Mantener el código original de error
-                    Toast.makeText(LoginActivity.this, "Error al iniciar sesión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<AuthResponse> call, Throwable t) {
                     progressDialog.dismiss();
+                    Log.e(TAG, "Error de conexión al iniciar sesión: " + t.getMessage());
+                    Toast.makeText(LoginActivity.this, "Error de conexión al iniciar sesión: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: La Activity está a punto de hacerse visible.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: La Activity es visible y tiene el foco.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: La Activity está perdiendo el foco.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: La Activity ya no es visible.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: La Activity está volviendo a empezar después de detenerse.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.contains("@");
     }
 }

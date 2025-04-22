@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btn_ver_entrega"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver Entrega"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapViewEntrega"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/textViewOrigen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Origen: "
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textViewDestino"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Destino: "
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/textViewContenido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Contenido: " />
+
+</LinearLayout>

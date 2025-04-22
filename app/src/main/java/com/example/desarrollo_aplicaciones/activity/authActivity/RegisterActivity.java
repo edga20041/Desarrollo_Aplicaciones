@@ -1,5 +1,7 @@
 package com.example.desarrollo_aplicaciones.activity.authActivity;
 
+import static com.example.desarrollo_aplicaciones.helpers.Formats.*;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,40 +10,42 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.desarrollo_aplicaciones.R;
-import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
-import com.example.desarrollo_aplicaciones.entity.User;
-import com.example.desarrollo_aplicaciones.repository.auth.AuthServiceCallback;
-import com.example.desarrollo_aplicaciones.repository.auth.AuthRetrofitRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Random;
+import com.example.desarrollo_aplicaciones.R;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
+import com.example.desarrollo_aplicaciones.api.model.RegisterRequest;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.example.desarrollo_aplicaciones.helpers.Validations;
 
 @AndroidEntryPoint
 public class RegisterActivity extends AppCompatActivity {
+    private static final String TAG = "RegisterActivity";
+
+    private final Validations validations = new Validations(TAG);
 
     @Inject
-    FirebaseAuth mAuth;
+    ApiService apiService;
     @Inject
-    AuthRetrofitRepository authRetrofitRepository;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    TokenRepository tokenRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Log.d(TAG, "onCreate: La Activity ha sido creada.");
 
         EditText nombreInput = findViewById(R.id.nombreInput);
         EditText apellidoInput = findViewById(R.id.apellidoInput);
@@ -51,151 +55,76 @@ public class RegisterActivity extends AppCompatActivity {
         EditText passwordInput = findViewById(R.id.passwordInput);
         EditText confirmPasswordInput = findViewById(R.id.confirmPasswordInput);
         Button registerButton = findViewById(R.id.registerUserButton);
-        ImageView showPasswordIcon = findViewById(R.id.showPasswordIcon);
-        ImageView showConfirmPasswordIcon = findViewById(R.id.showConfirmPasswordIcon);
         Button backButton = findViewById(R.id.backButton);
 
-        configurePasswordVisibility(passwordInput, showPasswordIcon);
-        configurePasswordVisibility(confirmPasswordInput, showConfirmPasswordIcon);
 
-        backButton.setOnClickListener(v -> onBackPressed());
+
+        backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         registerButton.setOnClickListener(v -> {
-            String nombre = nombreInput.getText().toString().trim();
-            String apellido = apellidoInput.getText().toString().trim();
-            String dni = dniInput.getText().toString().trim();
-            String phone = phoneInput.getText().toString().trim();
-            String email = emailInput.getText().toString().trim();
-            String password = passwordInput.getText().toString().trim();
-            String confirmPassword = confirmPasswordInput.getText().toString().trim();
+            String nombre = capitalizeInput(nombreInput);
+            String apellido = capitalizeInput(apellidoInput);
+            String dni = getTextInput(dniInput);
+            String phone = getTextInput(phoneInput);
+            String email = getTextInput(emailInput);
+            String password = getTextInput(passwordInput);
+            String confirmPassword = getTextInput(confirmPasswordInput);
 
-            if (validateFields(nombre, apellido, dni, phone, email, password, confirmPassword)) {
-                RegisterRequest registerRequest = new RegisterRequest(nombre, apellido, dni, phone, email, password);
-                registerWithFirebase(registerRequest);
+            if (validations.validateFields(this, nombre, apellido, dni, phone, email, password, confirmPassword)) {
+                RegisterRequest registerRequest = new RegisterRequest(email, password, nombre, apellido, phone, Integer.parseInt(dni));
+                Log.d(TAG, "registerButton.OnClickListener: Realizando registro con: " + registerRequest);
+                Toast.makeText(RegisterActivity.this, "Aguarde un instante, estamos procesando tu registro...", Toast.LENGTH_LONG).show();
+
+
+                registerWithBackend(registerRequest);
             }
         });
     }
 
-    private void configurePasswordVisibility(EditText passwordField, ImageView toggleIcon) {
-        passwordField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        toggleIcon.setOnClickListener(v -> {
-            if (passwordField.getInputType() == (android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-                passwordField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                toggleIcon.setImageResource(R.drawable.ic_eye);
-            } else {
-                passwordField.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                toggleIcon.setImageResource(R.drawable.ic_eye_off);
-            }
-            passwordField.setSelection(passwordField.getText().length());
-        })
-    ;}
 
 
-    private boolean validateFields(String nombre, String apellido, String dni, String phone, String email, String password, String confirmPassword) {
-        if (nombre.isEmpty() || apellido.isEmpty() || dni.isEmpty() || phone.isEmpty() ||
-                email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+    private void registerWithBackend(RegisterRequest registerRequest) {
+        Call<ResponseBody> call = apiService.register(registerRequest);
+        Log.d(TAG, "registerWithBackend: Llamando al endpoint de registro...");
 
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
-    private void registerWithFirebase(RegisterRequest registerRequest) {
-        authRetrofitRepository.register(registerRequest, new AuthServiceCallback<Void>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String mensaje = response.body().string(); // Lee la respuesta como texto plano
+                        Log.d(TAG, "Registro exitoso: " + mensaje);
+                        Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_LONG).show();
 
-
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                if (firebaseUser != null) {
-                    firebaseUser.sendEmailVerification().addOnCompleteListener(emailTask -> {
-                        if (emailTask.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Código enviado a tu correo. Verifica para continuar.", Toast.LENGTH_LONG).show();
-
-                            String codigo = generarCodigoVerificacion();
-                            almacenarCodigoVerificacion(registerRequest.getEmail(), codigo);
-                            enviarCorreo(registerRequest.getEmail(), codigo);
-
-                            User user = new User(registerRequest.getNombre(), registerRequest.getApellido(), registerRequest.getDni(), registerRequest.getEmail(), registerRequest.getPhone());
-                            guardarDatosUsuario(user);
-
-                            Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
-                            intent.putExtra("email", registerRequest.getEmail());
-                            intent.putExtra("codigoVerificacion", codigo);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Error al enviar código de verificación", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                Toast.makeText(RegisterActivity.this, "Error al registrar: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void guardarDatosUsuario(User user) {
-        db.collection("users").document(user.getEmail())
-                .set(user)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("RegisterActivity", "Datos de usuario guardados");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("RegisterActivity", "Error al guardar datos de usuario", e);
-
-                });
-    }
-
-    private String generarCodigoVerificacion() {
-        String caracteres = "0123456789";
-        Random random = new Random();
-        StringBuilder codigo = new StringBuilder(6);
-        for (int i = 0; i < 6; i++) {
-            codigo.append(caracteres.charAt(random.nextInt(caracteres.length())));
-        }
-        return codigo.toString();
-    }
-
-    private void almacenarCodigoVerificacion(String email, String codigo) {
-        long fechaExpiracion = System.currentTimeMillis() + 300000; // 5 minutos de expiración
-        db.collection("codigos_verificacion").document(email)
-                .set(java.util.Map.of(
-                        "codigo", codigo,
-                        "fecha_expiracion", fechaExpiracion
-                ))
-                .addOnSuccessListener(aVoid -> {
-                })
-                .addOnFailureListener(e -> {
-                });
-    }
-
-    private void enviarCorreo(String email, String codigo) {
-        new Thread(() -> {
-            String asunto = "Tu código de verificación";
-            String mensaje = "Tu código de verificación es: " + codigo;
-
-            String usuarioCorreo = "edgardo20041@gmail.com";
-            String contrasenaCorreo = "rcih ashw ikid soip";
-
-            boolean enviado = EmailService.enviarCorreo(email, asunto, mensaje, usuarioCorreo, contrasenaCorreo);
-
-            runOnUiThread(() -> {
-                if (enviado) {
-                    Toast.makeText(this, "Código enviado a tu correo.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(RegisterActivity.this, VerifyCodeActivity.class);
+                        intent.putExtra("email", registerRequest.getEmail());
+                        startActivity(intent);
+                        finish();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error al leer la respuesta del servidor", e);
+                    }
+                } else if (response.code() == 400) {
+                    Log.e(TAG, "Usuario ya registrado.");
+                    Toast.makeText(RegisterActivity.this, "El usuario ya está registrado.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Error al enviar el correo.", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error inesperado del servidor.");
+                    Toast.makeText(RegisterActivity.this, "Error en el registro. Por favor, intenta nuevamente.", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }).start();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Fallo en la llamada al backend", t);
+                Toast.makeText(RegisterActivity.this, "Error de conexión. Verifica tu conexión a internet.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterActivity{" +
+                "authApi=" + apiService +
+                ", tokenRepository=" + tokenRepository +
+                '}';
     }
 }

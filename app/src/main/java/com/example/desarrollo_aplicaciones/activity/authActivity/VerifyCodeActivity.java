@@ -1,7 +1,174 @@
 package com.example.desarrollo_aplicaciones.activity.authActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+
+import com.example.desarrollo_aplicaciones.HomeActivity;
+import com.example.desarrollo_aplicaciones.api.model.ApiService;
+import com.example.desarrollo_aplicaciones.api.model.ResendCodeRequest;
+import com.example.desarrollo_aplicaciones.api.model.VerifyRequest;
+import com.example.desarrollo_aplicaciones.api.model.AuthResponse;
+import com.example.desarrollo_aplicaciones.R;
+import com.example.desarrollo_aplicaciones.repository.auth.TokenRepository;
+
+import java.io.IOException;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+@AndroidEntryPoint
+public class VerifyCodeActivity extends AppCompatActivity {
+
+    private static final String TAG = "VerifyCodeActivity";
+
+
+    private EditText codigoEditText;
+    private Button confirmarButton, reenviarButton;
+
+    @Inject
+    ApiService apiService;
+    @Inject
+    TokenRepository tokenRepository;
+
+
+
+    private String email;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_verify_code);
+
+        // Obtener referencias a vistas
+        codigoEditText = findViewById(R.id.codigoIngresadoEditText);
+        confirmarButton = findViewById(R.id.verifyCodeButton);
+        reenviarButton = findViewById(R.id.btnReenviar);
+
+        // Obtener el email desde el intent
+        email = getIntent().getStringExtra("email");
+
+        confirmarButton.setOnClickListener(v -> verificarCodigo());
+        reenviarButton.setOnClickListener(v -> reenviarCodigo());
+    }
+
+    private void verificarCodigo() {
+        String codigo = codigoEditText.getText().toString().trim();
+
+        if (codigo.isEmpty()) {
+            Toast.makeText(this, "Ingresá el código", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        VerifyRequest request = new VerifyRequest(codigo);
+        Call<AuthResponse> call = apiService.verify(request);
+
+        call.enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    AuthResponse auth = response.body();
+                    tokenRepository.saveToken(auth.getToken());
+                    Log.d(TAG, "Verificación exitosa. JWT: " + auth.getToken());
+
+
+
+                    Intent intent = new Intent(VerifyCodeActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(VerifyCodeActivity.this, "Código incorrecto o expirado", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                Log.e(TAG, "Error al verificar código", t);
+                Toast.makeText(VerifyCodeActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void reenviarCodigo() {
+        if (email == null || email.isEmpty()) {
+            Toast.makeText(this, "No se encontró el email del usuario", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(VerifyCodeActivity.this, "Reenviando codigo, aguarde un instante...", Toast.LENGTH_LONG).show();
+
+        ResendCodeRequest request = new ResendCodeRequest(email);
+        Call<ResponseBody> call = apiService.resendCode(request);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String mensaje = response.body().string(); // Lee la respuesta como texto plano
+                        Log.d(TAG, "Código reenviado exitosamente: " + mensaje);
+                        Toast.makeText(VerifyCodeActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error al leer la respuesta del servidor", e);
+                        Toast.makeText(VerifyCodeActivity.this, "Error al procesar la respuesta del servidor.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e(TAG, "Error al reenviar el código: " + response.code());
+                    Toast.makeText(VerifyCodeActivity.this, "No se pudo reenviar el código. Inténtalo nuevamente.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Fallo en la llamada al backend", t);
+                Toast.makeText(VerifyCodeActivity.this, "Error de conexión. Verifica tu conexión a internet.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*package com.example.desarrollo_aplicaciones.activity.authActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,7 +189,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class VerifyCodeActivity extends AppCompatActivity {
-
+    private static final String TAG = "VerifyCodeActivity";
     @Inject
     AuthRetrofitRepository authRetrofitRepository;
 
@@ -36,7 +203,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_code);
-
+        Log.d(TAG, "onCreate: La Activity ha sido creada.");
         email = getIntent().getStringExtra("email");
         codigoVerificacionGenerado = getIntent().getStringExtra("codigoVerificacion");
 
@@ -47,7 +214,41 @@ public class VerifyCodeActivity extends AppCompatActivity {
         verificarCodigoButton.setOnClickListener(v -> verificarCodigo());
         btnReenviar.setOnClickListener(v -> reenviarCodigo());
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: La Activity está a punto de hacerse visible.");
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: La Activity es visible y tiene el foco.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: La Activity está perdiendo el foco.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: La Activity ya no es visible.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: La Activity está volviendo a empezar después de detenerse.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: La Activity está siendo destruida.");
+    }
     private void verificarCodigo() {
         String codigoIngresado = codigoIngresadoEditText.getText().toString();
 
@@ -132,4 +333,4 @@ public class VerifyCodeActivity extends AppCompatActivity {
             });
         }).start();
     }
-}
+}*/
