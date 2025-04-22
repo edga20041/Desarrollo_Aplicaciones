@@ -87,6 +87,6 @@ public class Validations {
     }
 
     private boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%&*_+?\\-=]).{8,}$");
+        return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%&*._+?\\-=]).{8,}$");
     }
 }
