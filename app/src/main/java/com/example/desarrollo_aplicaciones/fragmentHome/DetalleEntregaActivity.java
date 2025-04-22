@@ -98,10 +98,12 @@ public class DetalleEntregaActivity extends AppCompatActivity {
                     Log.d("FinalizarEntrega", "Entrega finalizada exitosamente: " + response.body().getMessage());
                     Toast.makeText(DetalleEntregaActivity.this, "Entrega finalizada", Toast.LENGTH_SHORT).show();
 
+                    Log.d("DetalleEntregaActivity", "Enviando broadcast 'entrega_finalizada'"); // LOG ANTES DE ENVIAR EL BROADCAST
                     Intent intent = new Intent("entrega_finalizada");
                     LocalBroadcastManager.getInstance(DetalleEntregaActivity.this).sendBroadcast(intent);
-
+                    Log.d("DetalleEntregaActivity", "Broadcast 'entrega_finalizada' enviado."); // LOG DESPUÉS DE ENVIAR EL BROADCAST
                     finish();
+
                 } else {
                     Log.e("FinalizarEntrega", "Error al finalizar la entrega. Código: " + response.code());
                     if (response.errorBody() != null) {

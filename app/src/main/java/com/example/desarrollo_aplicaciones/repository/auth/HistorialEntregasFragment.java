@@ -1,5 +1,9 @@
 package com.example.desarrollo_aplicaciones.repository.auth;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +47,38 @@ public class HistorialEntregasFragment extends Fragment {
     private HistorialEntregaAdapter adapter;
     private TextView textViewEmptyHistory;
     private List<Entrega> historialEntregas = new ArrayList<>();
+    private LocalBroadcastManager localBroadcastManager;
+    private BroadcastReceiver rutaFinalizadaReceiver;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: llamado");
+        localBroadcastManager = LocalBroadcastManager.getInstance(requireContext());
+        registrarBroadcastReceiver();
+    }
+
+    private void registrarBroadcastReceiver() {
+        rutaFinalizadaReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: Broadcast recibido: " + intent.getAction());
+                if ("ruta_finalizada".equals(intent.getAction())) {
+                    Log.d(TAG, "onReceive: Acción 'ruta_finalizada' recibida, recargando historial.");
+                    cargarHistorial();
+                }
+            }
+        };
+        localBroadcastManager.registerReceiver(rutaFinalizadaReceiver, new IntentFilter("ruta_finalizada"));
+        Log.d(TAG, "BroadcastReceiver registrado para 'ruta_finalizada'.");
+    }
+
+    private void unregisterBroadcastReceiver() {
+        if (rutaFinalizadaReceiver != null && localBroadcastManager != null) {
+            localBroadcastManager.unregisterReceiver(rutaFinalizadaReceiver);
+            Log.d(TAG, "BroadcastReceiver desregistrado para 'ruta_finalizada'.");
+        }
+    }
 
     @Nullable
     @Override
@@ -62,8 +99,29 @@ public class HistorialEntregasFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: Cargando historial");
+        Log.d(TAG, "onViewCreated: (Inicialmente) Cargando historial");
+        // No es necesario cargar aquí, lo haremos en onResume
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: Fragment resumed, cargando historial.");
         cargarHistorial();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: Fragment en pausa, desregistrando receiver.");
+        unregisterBroadcastReceiver();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Fragment destruido, desregistrando receiver.");
+        unregisterBroadcastReceiver();
     }
 
     private void cargarHistorial() {

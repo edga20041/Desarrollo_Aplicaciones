@@ -54,6 +54,26 @@ public class ListaEntregasFragment extends Fragment {
     private TextView textViewEmptyList;
     private LinearLayout entregasLayout;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: Registrando BroadcastReceiver");
+        localBroadcastManager = LocalBroadcastManager.getInstance(requireContext());
+        entregaFinalizadaReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: Broadcast recibido: " + intent.getAction());
+                if ("entrega_finalizada".equals(intent.getAction())) {
+                    Log.d(TAG, "onReceive: Acción 'entrega_finalizada', recargando entregas.");
+                    cargarEntregas();
+                    Log.d(TAG, "onReceive: Se llamó a cargarEntregas()");
+                }
+            }
+        };
+        localBroadcastManager.registerReceiver(entregaFinalizadaReceiver, new IntentFilter("entrega_finalizada"));
+        Log.d(TAG, "onCreate: BroadcastReceiver registrado.");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,7 +91,6 @@ public class ListaEntregasFragment extends Fragment {
         }, getContext(), apiService, tokenRepository);
         recyclerEntregas.setAdapter(adapter);
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(requireContext());
         Log.d(TAG, "onCreateView: Layout inflado y RecyclerView configurado");
         return view;
     }
@@ -84,44 +103,12 @@ public class ListaEntregasFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: Registrando BroadcastReceiver");
-        registrarBroadcastReceiver();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: Recargando entregas");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop: Desregistrando BroadcastReceiver");
-        unregisterBroadcastReceiver();
-    }
-
-    private void registrarBroadcastReceiver() {
-        entregaFinalizadaReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive: Broadcast recibido: " + intent.getAction());
-                if ("entrega_finalizada".equals(intent.getAction())) {
-                    Log.d(TAG, "onReceive: Acción 'entrega_finalizada', recargando entregas.");
-                    cargarEntregas();
-                }
-            }
-        };
-        localBroadcastManager.registerReceiver(entregaFinalizadaReceiver, new IntentFilter("entrega_finalizada"));
-        Log.d(TAG, "BroadcastReceiver registrado para 'entrega_finalizada'");
-    }
-
-    private void unregisterBroadcastReceiver() {
-        if (entregaFinalizadaReceiver != null) {
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Desregistrando BroadcastReceiver");
+        if (entregaFinalizadaReceiver != null && localBroadcastManager != null) {
             localBroadcastManager.unregisterReceiver(entregaFinalizadaReceiver);
-            Log.d(TAG, "BroadcastReceiver desregistrado.");
+            Log.d(TAG, "onDestroy: BroadcastReceiver desregistrado.");
         }
     }
 
